@@ -11,41 +11,23 @@ export const folders = [
         slug : 'inbox',
         icon : 'heroicons_outline:inbox',
     },
-    {
-        id   : '1ee2ea29-9a1f-4c27-b4d2-5e465703b6a0',
-        title: 'Leave request',
-        slug : 'Leave request',
-        icon : 'heroicons_outline:paper-airplane',
-    },
-    {
-        id   : 'Exit',
-        title: 'Exit permission',
-        slug : 'Exit permission',
-        icon : 'heroicons_outline:document',
-    },
-    {
-        id   : '0197c436-2ef3-424d-b546-8b7f49186e15',
-        title: 'Loan request',
-        slug : 'Loan request',
-        icon : 'heroicons_outline:exclamation-triangle',
-    },
-
 ];
 export const filters = [
     {
         id   : 'de1b41f6-6839-4f1b-9d2c-07e55f6f8f82',
-        title: 'Starred',
+        title: 'Accepted',
+        slug : 'starred',
+        icon : 'heroicons_outline:star',
+    },
+    {
+        id   : 'de1b41f6-6839-4f1b-9d2c-07e55f6f8f82',
+        title: 'Refused',
         slug : 'starred',
         icon : 'heroicons_outline:star',
     },
 ];
 export const labels = [
-    {
-        id   : 'b167d3c4-f6ed-4ea6-9579-a12f95a9d76e',
-        title: 'Personal',
-        slug : 'personal',
-        color: 'blue',
-    },
+    
 ];
 
 export const mails = [

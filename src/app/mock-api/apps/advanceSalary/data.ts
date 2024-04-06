@@ -7,22 +7,7 @@ const now = DateTime.now();
 export const folders = [
     {
         id   : '7c004a19-4506-48ef-93ab-f16381302e3b',
-        title: 'Advance salary',
-        slug : 'inbox',
-        icon : 'heroicons_outline:inbox',
-    },
-];
-
-export const result = [
-    {
-        id   : '7c004a19-4506-48ef-93ab-f16381302e3b',
-        title: 'Accepted',
-        slug : 'inbox',
-        icon : 'heroicons_outline:inbox',
-    },
-    {
-        id   : '7c004a19-4506-48ef-93ab-f16381302e3b',
-        title: 'Refused',
+        title: 'Advance Salary',
         slug : 'inbox',
         icon : 'heroicons_outline:inbox',
     },
@@ -30,18 +15,19 @@ export const result = [
 export const filters = [
     {
         id   : 'de1b41f6-6839-4f1b-9d2c-07e55f6f8f82',
-        title: 'Starred',
+        title: 'Accepted',
+        slug : 'starred',
+        icon : 'heroicons_outline:star',
+    },
+    {
+        id   : 'de1b41f6-6839-4f1b-9d2c-07e55f6f8f82',
+        title: 'Refused',
         slug : 'starred',
         icon : 'heroicons_outline:star',
     },
 ];
 export const labels = [
-    {
-        id   : 'b167d3c4-f6ed-4ea6-9579-a12f95a9d76e',
-        title: 'Personal',
-        slug : 'personal',
-        color: 'blue',
-    },
+
 ];
 
 export const mails = [

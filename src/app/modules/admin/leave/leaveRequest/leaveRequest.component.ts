@@ -7,7 +7,7 @@ import { MailboxSidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
     selector     : 'mailbox',
-    templateUrl  : './mailbox.component.html',
+    templateUrl  : 'leaveRequest.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone   : true,
     imports      : [MatSidenavModule, MailboxSidebarComponent, RouterOutlet],

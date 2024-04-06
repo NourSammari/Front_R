@@ -5,7 +5,10 @@ import { ECommerceInventoryMockApi } from 'app/mock-api/apps/ecommerce/inventory
 import { FileManagerMockApi } from 'app/mock-api/apps/file-manager/api';
 import { HelpCenterMockApi } from 'app/mock-api/apps/help-center/api';
 import { MailboxMockApi } from 'app/mock-api/apps/mailbox/api';
-import { advanceSalaryMockApi } from 'app/mock-api/apps/advanceSalary/api';
+import { advanceSalary } from 'app/mock-api/apps/advanceSalary/api';
+import { LoanRequest } from 'app/mock-api/apps/loanRequest/api';
+import { leaveRequest } from 'app/mock-api/apps/leaveRequest/api';
+import { exitPermission } from './apps/exitPermission/api';
 import { NotesMockApi } from 'app/mock-api/apps/notes/api';
 import { ScrumboardMockApi } from 'app/mock-api/apps/scrumboard/api';
 import { TasksMockApi } from 'app/mock-api/apps/tasks/api';
@@ -36,7 +39,7 @@ export const mockApiServices = [
     HelpCenterMockApi,
     IconsMockApi,
     MailboxMockApi,
-    advanceSalaryMockApi,
+    advanceSalary,
     MessagesMockApi,
     NavigationMockApi,
     NotesMockApi,
@@ -46,4 +49,7 @@ export const mockApiServices = [
     ShortcutsMockApi,
     TasksMockApi,
     UserMockApi,
+    LoanRequest,
+    leaveRequest,
+    exitPermission,
 ];

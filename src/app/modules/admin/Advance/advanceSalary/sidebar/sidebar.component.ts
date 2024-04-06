@@ -3,10 +3,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { FuseNavigationItem, FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
-import { MailboxComposeComponent } from 'app/modules/admin/Advance/advanceSalary/compose/compose.component';
-import { labelColorDefs } from 'app/modules/admin/Advance/advanceSalary/mailbox.constants';
-import { MailboxService } from 'app/modules/admin/Advance/advanceSalary/mailbox.service';
-import { MailFilter, MailFolder, MailLabel } from 'app/modules/admin/Advance/advanceSalary/mailbox.types';
+import { MailboxComposeComponent } from 'app/modules/admin/advance/advanceSalary/compose/compose.component';
+import { labelColorDefs } from 'app/modules/admin/advance/advanceSalary/advanceSalary.constants';
+import { MailboxService } from 'app/modules/admin/advance/advanceSalary/advanceSalary.service';
+import { MailFilter, MailFolder, MailLabel } from 'app/modules/admin/advance/advanceSalary/advanceSalary.types';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -21,13 +21,10 @@ export class MailboxSidebarComponent implements OnInit, OnDestroy
 {
     filters: MailFilter[];
     folders: MailFolder[];
-    results: MailFolder[];
-
     labels: MailLabel[];
     menuData: FuseNavigationItem[] = [];
     private _filtersMenuData: FuseNavigationItem[] = [];
     private _foldersMenuData: FuseNavigationItem[] = [];
-    private _resultsMenuData: FuseNavigationItem[] = [];
     private _labelsMenuData: FuseNavigationItem[] = [];
     private _otherMenuData: FuseNavigationItem[] = [];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -75,20 +72,6 @@ export class MailboxSidebarComponent implements OnInit, OnDestroy
 
                 // Update navigation badge
                 this._updateNavigationBadge(folders);
-            });
-
-        // Results
-        this._mailboxService.folders$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((results: MailFolder[]) =>
-            {
-                this.results = results;
-
-                // Generate menu links
-                this._generateResultsMenuLinks();
-
-                // Update navigation badge
-                this._updateNavigationBadge(results);
             });
 
         // Labels
@@ -173,46 +156,10 @@ export class MailboxSidebarComponent implements OnInit, OnDestroy
             // Push the menu item to the folders menu data
             this._foldersMenuData.push(menuItem);
         });
+
+        // Update the menu data
+        this._updateMenuData();
     }
-
-
-    /**
-     * Generate menus for folders
-     *
-     * @private
-     */
-    private _generateResultsMenuLinks(): void
-    {
-
-         // Reset the folders menu data
-         this._resultsMenuData = [];
-
-        // Iterate through the folders
-        this.results.forEach((result) =>
-        {
-            // Generate menu item for the folder
-            const menuItem: FuseNavigationItem = {
-                id   : result.id,
-                title: result.title,
-                type : 'basic',
-                icon : result.icon,
-                link : '/advanceSalary/' + result.slug,
-            };
-
-            // If the count is available and is bigger than zero...
-            if ( result.count && result.count > 0 )
-            {
-                // Add the count as a badge
-                menuItem['badge'] = {
-                    title: result.count + '',
-                };
-            }
-
-            // Push the menu item to the folders menu data
-            this._resultsMenuData.push(menuItem);
-        });
-    }
-
 
     /**
      * Generate menus for filters
@@ -299,20 +246,19 @@ export class MailboxSidebarComponent implements OnInit, OnDestroy
     {
         this.menuData = [
             {
-                title   : 'REQUESTS',
+                title   : 'Requests',
                 type    : 'group',
                 children: [
                     ...this._foldersMenuData,
                 ],
             },
             {
-                title   : 'RESULTS',
+                title   : 'FILTERS',
                 type    : 'group',
                 children: [
-                    ...this._resultsMenuData,
+                    ...this._filtersMenuData,
                 ],
             },
-
         ];
     }
 

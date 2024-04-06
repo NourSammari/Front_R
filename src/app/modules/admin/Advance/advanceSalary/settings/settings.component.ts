@@ -7,10 +7,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MailboxComponent } from 'app/modules/admin/Advance/advanceSalary/mailbox.component';
-import { labelColorDefs, labelColors } from 'app/modules/admin/Advance/advanceSalary/mailbox.constants';
-import { MailboxService } from 'app/modules/admin/Advance/advanceSalary/mailbox.service';
-import { MailLabel } from 'app/modules/admin/Advance/advanceSalary/mailbox.types';
+import { MailboxComponent } from 'app/modules/admin/advance/advanceSalary/advanceSalary.component';
+import { labelColorDefs, labelColors } from 'app/modules/admin/advance/advanceSalary/advanceSalary.constants';
+import { MailboxService } from 'app/modules/admin/advance/advanceSalary/advanceSalary.service';
+import { MailLabel } from 'app/modules/admin/advance/advanceSalary/advanceSalary.types';
 import { debounceTime, take } from 'rxjs';
 
 @Component({

@@ -12,9 +12,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FuseScrollResetDirective } from '@fuse/directives/scroll-reset';
 import { FuseFindByKeyPipe } from '@fuse/pipes/find-by-key/find-by-key.pipe';
-import { labelColorDefs } from 'app/modules/admin/Advance/advanceSalary/mailbox.constants';
-import { MailboxService } from 'app/modules/admin/Advance/advanceSalary/mailbox.service';
-import { Mail, MailFolder, MailLabel } from 'app/modules/admin/Advance/advanceSalary/mailbox.types';
+import { labelColorDefs } from 'app/modules/admin/advance/advanceSalary/advanceSalary.constants';
+import { MailboxService } from 'app/modules/admin/advance/advanceSalary/advanceSalary.service';
+import { Mail, MailFolder, MailLabel } from 'app/modules/admin/advance/advanceSalary/advanceSalary.types';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

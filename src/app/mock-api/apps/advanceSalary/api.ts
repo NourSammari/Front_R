@@ -4,7 +4,7 @@ import { filters as filtersData, folders as foldersData, labels as labelsData, m
 import { assign, cloneDeep } from 'lodash-es';
 
 @Injectable({providedIn: 'root'})
-export class advanceSalaryMockApi
+export class advanceSalary
 {
     private _filters: any[] = filtersData;
     private _folders: any[] = foldersData;
@@ -82,60 +82,6 @@ export class advanceSalaryMockApi
                 // Return the response
                 return [200, cloneDeep(this._folders)];
             });
-        //-----------------------------------------------------------------------------
-
-
-        // -----------------------------------------------------------------------------------------------------
-        // @ Resultsssssss - GET
-        // -----------------------------------------------------------------------------------------------------
-        this._fuseMockApiService
-            .onGet('api/apps/advanceSalary/result')
-            .reply(() =>
-            {
-                let count = 0;
-
-                // Iterate through the folders
-                this._folders.forEach((result) =>
-                {
-                    // Get the mails of this folder
-                    const mails = this._mails.filter(mail => mail.folder === result.id);
-
-                    // If we are counting the 'sent' or the 'trash' folder...
-                    if ( result.slug === 'sent' || result.slug === 'trash' )
-                    {
-                        // Always set the count to 0
-                        count = 0;
-                    }
-                    // If we are counting the 'drafts' or the 'spam' folder...
-                    else if ( result.slug === 'drafts' || result.slug === 'trash' || result.slug === 'spam' )
-                    {
-                        // Set the count to the count of all mails
-                        count = mails.length;
-                    }
-                    // Otherwise ('inbox')...
-                    else
-                    {
-                        // Go through the mails and count the unread ones
-                        mails.forEach((mail) =>
-                        {
-                            if ( mail.unread )
-                            {
-                                count++;
-                            }
-                        });
-                    }
-
-                    // Append the count to the folder mock-api
-                    result.count = count;
-
-                    // Reset the count
-                    count = 0;
-                });
-
-                // Return the response
-                return [200, cloneDeep(this._folders)];
-            });
-
 
         // -----------------------------------------------------------------------------------------------------
         // @ Filters - GET

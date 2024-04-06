@@ -76,7 +76,13 @@ export const appRoutes: Route[] = [
             {path: 'projects', loadChildren: () => import('app/modules/admin/projects/projects.routes')},
             {path: 'profile', loadChildren: () => import('app/modules/admin/profile/profile.routes')},
             {path: 'qcm', loadChildren: () => import('app/modules/admin/qcm/qcm.routes')},
-            {path: 'mailbox', loadChildren: () => import('app/modules/admin/Advance/advanceSalary/mailbox.routes')},
+
+
+            {path: 'advance', loadChildren: () => import('app/modules/admin/advance/advanceSalary/advanceSalary.routes')},
+            {path: 'leave', loadChildren: () => import('app/modules/admin/leave/leaveRequest/leaveRequest.routes')},
+            {path: 'loan', loadChildren: () => import('app/modules/admin/loan/loanRequest/loanRequest.routes')},
+            {path: 'exit', loadChildren: () => import('app/modules/admin/exit/exitPermission/exitPermission.routes')},
+
             {path: 'users', loadChildren: () => import('app/modules/admin/users/contacts.routes')},
             {path: 'candidats', loadChildren: () => import('app/modules/admin/candidats/contacts.routes')},
             {path: 'interns', loadChildren: () => import('app/modules/admin/interns/contacts.routes')},

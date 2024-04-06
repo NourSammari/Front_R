@@ -4,12 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { MailboxComponent } from 'app/modules/admin/Advance/advanceSalary/mailbox.component';
-import { MailboxService } from 'app/modules/admin/Advance/advanceSalary/mailbox.service';
-import { Mail, MailCategory } from 'app/modules/admin/Advance/advanceSalary/mailbox.types';
+import { MailboxComponent } from 'app/modules/admin/advance/advanceSalary/advanceSalary.component';
+import { MailboxService } from 'app/modules/admin/advance/advanceSalary/advanceSalary.service';
+import { Mail, MailCategory } from 'app/modules/admin/advance/advanceSalary/advanceSalary.types';
 import { Subject, takeUntil } from 'rxjs';
-import { filter, fromEvent, Observable } from 'rxjs';
-
 
 @Component({
     selector     : 'mailbox-list',
@@ -35,7 +33,6 @@ export class MailboxListComponent implements OnInit, OnDestroy
     constructor(
         public mailboxComponent: MailboxComponent,
         private _mailboxService: MailboxService,
-
     )
     {
     }
@@ -95,10 +92,6 @@ export class MailboxListComponent implements OnInit, OnDestroy
             {
                 this.selectedMail = mail;
             });
-
-
-
-
     }
 
     /**
@@ -146,12 +139,4 @@ export class MailboxListComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
-
-
-
-
-    //*************************/
-
-
-
 }

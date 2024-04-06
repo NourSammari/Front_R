@@ -17,17 +17,42 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link : '/profile'
     },
     {
-        id   : 'requests',
-        title: 'Requests',
-        type : 'basic',
-        icon : 'heroicons_outline:clipboard-document-check',
-        link : '/mailbox'
+        id      : 'requests',
+        title   : 'Requests',
+        type    : 'collapsable',
+        icon    : 'heroicons_outline:queue-list',
+        children: [
+            {
+                id   : 'requests.advance',
+                title: 'Advance salary',
+                type : 'basic',
+                link : '/advance',
+            },
+            {
+                id   : 'requests.loan',
+                title: 'Loan request',
+                type : 'basic',
+                link : '/loan',
+            },
+            {
+                id   : 'requests.leave',
+                title: 'Leave request',
+                type : 'basic',
+                link : '/leave',
+            },
+            {
+                id   : 'requests.exit',
+                title: 'Exit permission',
+                type : 'basic',
+                link : '/exit',
+            },
+        ],
     },
     {
         id      : 'accounts',
         title   : 'Accounts',
         type    : 'collapsable',
-        icon    : 'heroicons_outline:shopping-cart',
+        icon    : 'heroicons_outline:user-group',
         children: [
             {
                 id   : 'accounts.users',
@@ -60,7 +85,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
         id   : 'company',
         title: 'Company',
         type : 'basic',
-        icon : 'heroicons_outline:chart-pie',
+        icon : 'heroicons_outline:building-office-2',
         link : '/company'
     },
     {

@@ -1,11 +1,11 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, Routes, UrlMatchResult, UrlSegment } from '@angular/router';
-import { MailboxDetailsComponent } from 'app/modules/admin/Advance/advanceSalary/details/details.component';
-import { MailboxEmptyDetailsComponent } from 'app/modules/admin/Advance/advanceSalary/empty-details/empty-details.component';
-import { MailboxListComponent } from 'app/modules/admin/Advance/advanceSalary/list/list.component';
-import { MailboxComponent } from 'app/modules/admin/Advance/advanceSalary/mailbox.component';
-import { MailboxService } from 'app/modules/admin/Advance/advanceSalary/mailbox.service';
-import { MailboxSettingsComponent } from 'app/modules/admin/Advance/advanceSalary/settings/settings.component';
+import { MailboxDetailsComponent } from 'app/modules/admin/advance/advanceSalary/details/details.component';
+import { MailboxEmptyDetailsComponent } from 'app/modules/admin/advance/advanceSalary/empty-details/empty-details.component';
+import { MailboxListComponent } from 'app/modules/admin/advance/advanceSalary/list/list.component';
+import { MailboxComponent } from 'app/modules/admin/advance/advanceSalary/advanceSalary.component';
+import { MailboxService } from 'app/modules/admin/advance/advanceSalary/advanceSalary.service';
+import { MailboxSettingsComponent } from 'app/modules/admin/advance/advanceSalary/settings/settings.component';
 import { isEqual } from 'lodash-es';
 import { catchError, finalize, forkJoin, throwError } from 'rxjs';
 
@@ -20,14 +20,8 @@ const mailboxRouteMatcher: (url: UrlSegment[]) => UrlMatchResult = (url: UrlSegm
     let consumed = url;
     const posParams = {};
 
-    // Settings
-    if ( url[0].path === 'settings' )
-    {
-        // Do not match
-        return null;
-    }
     // Filter or label
-    else if ( url[0].path === 'filter' || url[0].path === 'label' )
+    if( url[0].path === 'filter' || url[0].path === 'label' )
     {
         posParams[url[0].path] = url[1];
         posParams['page'] = url[2];

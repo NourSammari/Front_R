@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Mail, MailCategory, MailFilter, MailFolder, MailLabel } from 'app/modules/admin/Advance/advanceSalary/mailbox.types';
+import { Mail, MailCategory, MailFilter, MailFolder, MailLabel } from 'app/modules/admin/leave/leaveRequest/leaveRequest.types';
 import { BehaviorSubject, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
@@ -10,7 +10,6 @@ export class MailboxService
     private _category: BehaviorSubject<MailCategory> = new BehaviorSubject(null);
     private _filters: BehaviorSubject<MailFilter[]> = new BehaviorSubject(null);
     private _folders: BehaviorSubject<MailFolder[]> = new BehaviorSubject(null);
-    private _results: BehaviorSubject<MailFolder[]> = new BehaviorSubject(null);
     private _labels: BehaviorSubject<MailLabel[]> = new BehaviorSubject(null);
     private _mails: BehaviorSubject<Mail[]> = new BehaviorSubject(null);
     private _mailsLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -101,7 +100,7 @@ export class MailboxService
      */
     getFilters(): Observable<any>
     {
-        return this._httpClient.get<MailFilter[]>('api/apps/advanceSalary/filters').pipe(
+        return this._httpClient.get<MailFilter[]>('api/apps/LoanRequest/filters').pipe(
             tap((response: any) =>
             {
                 this._filters.next(response);
@@ -114,33 +113,20 @@ export class MailboxService
      */
     getFolders(): Observable<any>
     {
-        return this._httpClient.get<MailFolder[]>('api/apps/advanceSalary/folders').pipe(
+        return this._httpClient.get<MailFolder[]>('api/apps/leaveRequest/folders').pipe(
             tap((response: any) =>
             {
                 this._folders.next(response);
             }),
         );
     }
-    
-     /**
-     * Get folders
-     */
-     getResults(): Observable<any>
-     {
-         return this._httpClient.get<MailFolder[]>('api/apps/advanceSalary/result').pipe(
-             tap((response: any) =>
-             {
-                 this._results.next(response);
-             }),
-         );
-     }
 
     /**
      * Get labels
      */
     getLabels(): Observable<any>
     {
-        return this._httpClient.get<MailLabel[]>('api/apps/advanceSalary/labels').pipe(
+        return this._httpClient.get<MailLabel[]>('api/apps/leaveRequest/labels').pipe(
             tap((response: any) =>
             {
                 this._labels.next(response);
@@ -156,7 +142,7 @@ export class MailboxService
         // Execute the mails loading with true
         this._mailsLoading.next(true);
 
-        return this._httpClient.get<Mail[]>('api/apps/advanceSalary/mails', {
+        return this._httpClient.get<Mail[]>('api/apps/leaveRequest/mails', {
             params: {
                 filter,
                 page,
@@ -195,7 +181,7 @@ export class MailboxService
         // Execute the mails loading with true
         this._mailsLoading.next(true);
 
-        return this._httpClient.get<Mail[]>('api/apps/advanceSalary/mails', {
+        return this._httpClient.get<Mail[]>('api/apps/leaveRequest/mails', {
             params: {
                 folder,
                 page,
@@ -234,7 +220,7 @@ export class MailboxService
         // Execute the mails loading with true
         this._mailsLoading.next(true);
 
-        return this._httpClient.get<Mail[]>('api/apps/advanceSalary/mails', {
+        return this._httpClient.get<Mail[]>('api/apps/leaveRequest/mails', {
             params: {
                 label,
                 page,
@@ -303,7 +289,7 @@ export class MailboxService
      */
     updateMail(id: string, mail: Mail): Observable<any>
     {
-        return this._httpClient.patch('api/apps/advanceSalary/mail', {
+        return this._httpClient.patch('api/apps/leaveRequest/mail', {
             id,
             mail,
         }).pipe(
@@ -339,7 +325,7 @@ export class MailboxService
     {
         return this.labels$.pipe(
             take(1),
-            switchMap(labels => this._httpClient.post<MailLabel>('api/apps/advanceSalary/label', {label}).pipe(
+            switchMap(labels => this._httpClient.post<MailLabel>('api/apps/leaveRequest/label', {label}).pipe(
                 map((newLabel) =>
                 {
                     // Update the labels with the new label
@@ -362,7 +348,7 @@ export class MailboxService
     {
         return this.labels$.pipe(
             take(1),
-            switchMap(labels => this._httpClient.patch<MailLabel>('api/apps/advanceSalary/label', {
+            switchMap(labels => this._httpClient.patch<MailLabel>('api/apps/leaveRequest/label', {
                 id,
                 label,
             }).pipe(
@@ -393,7 +379,7 @@ export class MailboxService
     {
         return this.labels$.pipe(
             take(1),
-            switchMap(labels => this._httpClient.delete('api/apps/advanceSalary/label', {params: {id}}).pipe(
+            switchMap(labels => this._httpClient.delete('api/apps/leaveRequest/label', {params: {id}}).pipe(
                 map((isDeleted: any) =>
                 {
                     // Find the index of the deleted label within the labels
