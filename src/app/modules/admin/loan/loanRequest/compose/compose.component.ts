@@ -1,115 +1,90 @@
-import { NgIf } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'; // Correct import for FormBuilder and FormGroup
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { QuillEditorComponent } from 'ngx-quill';
+import { LoanRequestsService } from 'app/Services/loanRequest.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UserData } from 'app/Model/session';
+
 
 @Component({
     selector     : 'mailbox-compose',
     templateUrl  : './compose.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone   : true,
-    imports      : [MatButtonModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgIf, QuillEditorComponent],
+    imports      : [MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule,FormsModule, ReactiveFormsModule],
 })
-export class MailboxComposeComponent implements OnInit
-{
-    composeForm: UntypedFormGroup;
-    copyFields: { cc: boolean; bcc: boolean } = {
-        cc : false,
-        bcc: false,
-    };
-    quillModules: any = {
-        toolbar: [
-            ['bold', 'italic', 'underline'],
-            [{align: []}, {list: 'ordered'}, {list: 'bullet'}],
-            ['clean'],
-        ],
-    };
+export class MailboxComposeComponent implements OnInit {
+    composeForm: FormGroup;
+    userDataString = localStorage.getItem('userData');
+    userData: UserData = JSON.parse(this.userDataString);
+    CompanyId = this.userData.data.user.workCompanyId || '';
 
-    /**
-     * Constructor
-     */
     constructor(
         public matDialogRef: MatDialogRef<MailboxComposeComponent>,
-        private _formBuilder: UntypedFormBuilder,
-    )
-    {
-    }
+        private formBuilder: FormBuilder, // Use FormBuilder directly
+        private loanRequestService: LoanRequestsService // Use the loan requests service directly
+    ) {}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Create the form
-        this.composeForm = this._formBuilder.group({
-            to     : ['', [Validators.required, Validators.email]],
-            cc     : ['', [Validators.email]],
-            bcc    : ['', [Validators.email]],
-            subject: [''],
-            body   : ['', [Validators.required]],
+        this.composeForm = this.formBuilder.group({
+            Loan_amount: ['', [Validators.required]],
+            Loan_duration: [''],
+            interest_rate: [''],
+            reason: [''],
+            path_document: ['']
         });
     }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Show the copy field with the given field name
-     *
-     * @param name
-     */
-    showCopyField(name: string): void
-    {
-        // Return if the name is not one of the available names
-        if ( name !== 'cc' && name !== 'bcc' )
-        {
-            return;
+        saveAndClose(): void {
+            this.saveAsDraft();
+            this.matDialogRef.close();
         }
 
-        // Show the field
-        this.copyFields[name] = true;
-    }
+        discard(): void {
+            // Implement discard logic here if needed
+        }
 
-    /**
-     * Save and close
-     */
-    saveAndClose(): void
-    {
-        // Save the message as a draft
-        this.saveAsDraft();
+        saveAsDraft(): void {
+            // Implement saveAsDraft logic here if needed
+        }
 
-        // Close the dialog
-        this.matDialogRef.close();
-    }
+        send(): void {
+            if (this.composeForm.valid) {
+                // Convert LoanAmount to a number
+                const loanAmount: number = parseFloat(this.composeForm.value.Loan_amount);
+                const interestRate: number = parseFloat(this.composeForm.value.interest_rate);
 
-    /**
-     * Discard the message
-     */
-    discard(): void
-    {
-    }
 
-    /**
-     * Save the message as a draft
-     */
-    saveAsDraft(): void
-    {
-    }
+                // Check if the conversion is successful
+                if (!isNaN(loanAmount)) {
+                    const request = {
+                        LoanAmount: loanAmount, // Assign the converted value
+                        LoanDuration: this.composeForm.value.Loan_duration,
+                        InterestRate: interestRate,
+                        ReasonForLoan: this.composeForm.value.reason,
+                        PathDocument: this.composeForm.value.path_document
+                    };
 
-    /**
-     * Send the message
-     */
-    send(): void
-    {
+                    this.loanRequestService.addLoanRequest(this.CompanyId, request).subscribe(
+                        response => {
+                            // Handle success response
+                            console.log('Loan request added successfully:', response);
+                            this.matDialogRef.close();
+                        },
+                        error => {
+                            // Handle error response
+                            console.error('Error adding loan request:', error);
+                        }
+                    );
+                } else {
+                    console.error('LoanAmount is not a valid number');
+                }
+            }
+        }
+
     }
-}

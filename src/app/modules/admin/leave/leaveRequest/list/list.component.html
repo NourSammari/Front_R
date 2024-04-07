@@ -59,17 +59,14 @@
 
             <!-- Mail list -->
             <div
-                class="overflow-y-auto"
-                #mailList>
+                class="overflow-y-auto">
 
                 <!-- Item loop -->
                 <ng-container *ngFor="let mail of mails; let i = index; trackBy: trackByFn">
 
                     <!-- Item -->
                     <a
-                        class="relative flex border-t first:border-0 hover:bg-hover"
-                        [routerLink]="[mail.id]"
-                        (click)="onMailSelected(mail)">
+                        class="relative flex border-t first:border-0 hover:bg-hover">
 
                         <!-- Item content -->
                         <div

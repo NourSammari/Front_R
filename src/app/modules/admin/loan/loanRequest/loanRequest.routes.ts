@@ -1,11 +1,8 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, Routes, UrlMatchResult, UrlSegment } from '@angular/router';
-import { MailboxDetailsComponent } from 'app/modules/admin/loan/loanRequest/details/details.component';
-import { MailboxEmptyDetailsComponent } from 'app/modules/admin/loan/loanRequest/empty-details/empty-details.component';
 import { MailboxListComponent } from 'app/modules/admin/loan/loanRequest/list/list.component';
 import { MailboxComponent } from 'app/modules/admin/loan/loanRequest/loanRequest.component';
 import { MailboxService } from 'app/modules/admin/loan/loanRequest/loanRequest.service';
-import { MailboxSettingsComponent } from 'app/modules/admin/loan/loanRequest/settings/settings.component';
 import { isEqual } from 'lodash-es';
 import { catchError, finalize, forkJoin, throwError } from 'rxjs';
 
@@ -265,24 +262,7 @@ export default [
                 resolve              : {
                     mails: mailsResolver,
                 },
-                children             : [
-                    {
-                        path     : '',
-                        pathMatch: 'full',
-                        component: MailboxEmptyDetailsComponent,
-                    },
-                    {
-                        path     : ':id',
-                        component: MailboxDetailsComponent,
-                        resolve  : {
-                            mail: mailResolver,
-                        },
-                    },
-                ],
-            },
-            {
-                path     : 'settings',
-                component: MailboxSettingsComponent,
+
             },
         ],
     },

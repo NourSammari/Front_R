@@ -8,6 +8,7 @@ import { labelColorDefs } from 'app/modules/admin/loan/loanRequest/loanRequest.c
 import { MailboxService } from 'app/modules/admin/loan/loanRequest/loanRequest.service';
 import { MailFilter, MailFolder, MailLabel } from 'app/modules/admin/loan/loanRequest/loanRequest.types';
 import { Subject, takeUntil } from 'rxjs';
+import { MailboxListComponent } from '../list/list.component';
 
 @Component({
     selector     : 'mailbox-sidebar',
@@ -28,6 +29,9 @@ export class MailboxSidebarComponent implements OnInit, OnDestroy
     private _labelsMenuData: FuseNavigationItem[] = [];
     private _otherMenuData: FuseNavigationItem[] = [];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+
+   
+
 
     /**
      * Constructor
@@ -102,6 +106,7 @@ export class MailboxSidebarComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
 
     /**
      * Open compose dialog
