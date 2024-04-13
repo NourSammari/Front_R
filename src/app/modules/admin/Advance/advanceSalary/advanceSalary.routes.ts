@@ -3,7 +3,6 @@ import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, Routes, UrlMatchRe
 import { MailboxListComponent } from 'app/modules/admin/advance/advanceSalary/list/list.component';
 import { MailboxComponent } from 'app/modules/admin/advance/advanceSalary/advanceSalary.component';
 import { MailboxService } from 'app/modules/admin/advance/advanceSalary/advanceSalary.service';
-import { MailboxSettingsComponent } from 'app/modules/admin/advance/advanceSalary/settings/settings.component';
 import { isEqual } from 'lodash-es';
 import { catchError, finalize, forkJoin, throwError } from 'rxjs';
 
@@ -265,7 +264,7 @@ export default [
                 },
 
             },
-            
+
         ],
     },
     {

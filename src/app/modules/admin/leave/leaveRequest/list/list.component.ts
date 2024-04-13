@@ -17,6 +17,8 @@ import { LeaveRequestDetails } from 'app/Model/leaveRequest';
 import { RouterLink } from '@angular/router';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
+import { UserService } from 'app/Services/user-service.service';
+
 
 
 @Component({
@@ -35,7 +37,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
     pageSizeOptions: number[] = [5, 10, 20, 50];
     pageIndex: number = 0;
     pageSize: number = 10;
-    leaveRequest: LeaveRequestDetails[] = [];
+    leaveRequest: any[] = [];
     userDataString = localStorage.getItem('userData');
     userData: UserData = JSON.parse(this.userDataString);
     CompanyId = this.userData.data.user.workCompanyId || '';
@@ -49,6 +51,8 @@ export class MailboxListComponent implements OnInit, OnDestroy
         private leaveRequestService: LeaveRequestService,
         public mailboxComponent: MailboxComponent,
         private _fuseConfirmationService: FuseConfirmationService,
+        private userService: UserService,
+
     )
     {
     }
@@ -65,19 +69,44 @@ export class MailboxListComponent implements OnInit, OnDestroy
     }, 5000);
     }
 
-    fetchLoanRequests(): void {
-        console.log('Fetching loan requests...');
-        this.leaveRequestService.getLeaveRequestsByCompany(this.CompanyId, this.pageIndex + 1, this.pageSize).subscribe(
-            response => {
-                console.log('Data received:', response.data.items);
-                this.leaveRequest = response.data.items;
-                this.totalRequests = response.data.totalCount;
-            },
-            error => {
-                console.error('Error fetching loan requests:', error);
+
+    userMap: { [userId: string]: any } = {};
+
+        fetchLoanRequests(): void {
+            console.log('Fetching leave requests...');
+            this.leaveRequestService.getLeaveRequestsByCompany(this.CompanyId, this.pageIndex + 1, this.pageSize).subscribe(
+                response => {
+                    console.log('Data received:', response.data.items);
+                    this.leaveRequest = response.data.items;
+                    this.totalRequests = response.data.totalCount;
+
+                    this.leaveRequest.forEach(request => {
+                        this.fetchUser(request.UserID);
+                    });
+                },
+                error => {
+                    console.error('Error fetching loan requests:', error);
+                }
+            );
+        }
+
+        fetchUser(UserId:string): void {
+            if (!this.userMap[UserId]) {
+                this.userService.getUser(this.CompanyId, UserId).subscribe(
+                    response => {
+                        if (response.data && response.data.email) {
+                            this.userMap[UserId] = response.data;
+                            console.log('Data received:', response);
+                        } else {
+                            console.error('Invalid response data:', response.data);
+                        }
+                    },
+                    error => {
+                        console.error('Error fetching user:', error);
+                    }
+                );
             }
-        );
-    }
+        }
 
     /*fetchLoanRefusedRequests(): void {
         console.log('Fetching loan requests...');

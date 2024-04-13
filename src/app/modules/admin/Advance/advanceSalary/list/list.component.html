@@ -26,7 +26,7 @@
                         <!-- Left section -->
                         <div class="flex flex-col px-4">
                             <!-- User name -->
-                            <div class="font-semibold text-lg text-primary">User Name</div>
+                            <div class="font-semibold text-lg text-primary">{{ userMap[request.UserID]?.firstname }} {{ userMap[request.UserID]?.lastname }}</div>
                             <!-- Loan amount -->
                             <div class="text-gray-600">{{ request.Amount }}</div>
                         </div>

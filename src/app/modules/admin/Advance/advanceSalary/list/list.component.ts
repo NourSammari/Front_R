@@ -7,7 +7,6 @@ import { RouterOutlet } from '@angular/router';
 import { Mail, MailCategory } from 'app/modules/admin/loan/loanRequest/loanRequest.types';
 import { Subject, takeUntil } from 'rxjs';
 import { AdvanceSalaryRequestService } from 'app/Services/advanceSalary.service';
-import { LoanRequest } from 'app/Model/loanRequest';
 import { UserData } from 'app/Model/session';
 import { Router , ActivatedRoute } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
@@ -16,6 +15,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { RouterLink } from '@angular/router';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
+import { UserService } from 'app/Services/user-service.service';
 
 
 @Component({
@@ -34,10 +34,11 @@ export class MailboxListComponent implements OnInit, OnDestroy
     pageSizeOptions: number[] = [5, 10, 20, 50];
     pageIndex: number = 0;
     pageSize: number = 10;
-    loanRequests: LoanRequest[] = [];
+    loanRequests: any[] = [];
     userDataString = localStorage.getItem('userData');
     userData: UserData = JSON.parse(this.userDataString);
     CompanyId = this.userData.data.user.workCompanyId || '';
+    user : any;
     private destroy$ = new Subject<void>();
 
 
@@ -48,6 +49,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
      */
     constructor(
         private advanceSalaryRequestService: AdvanceSalaryRequestService,
+        private userService: UserService,
         public mailboxComponent: MailboxComponent,
         private _fuseConfirmationService: FuseConfirmationService,
     )
@@ -66,19 +68,43 @@ export class MailboxListComponent implements OnInit, OnDestroy
         }, 5000);
     }
 
-    fetchLoanRequests(): void {
-        console.log('Fetching loan requests...');
-        this.advanceSalaryRequestService.getAdvanceSalaryRequestsByCompany(this.CompanyId, this.pageIndex + 1, this.pageSize).subscribe(
+    userMap: { [userId: string]: any } = {};
+
+fetchLoanRequests(): void {
+    console.log('Fetching loan requests...');
+    this.advanceSalaryRequestService.getAdvanceSalaryRequestsByCompany(this.CompanyId, this.pageIndex + 1, this.pageSize).subscribe(
+        response => {
+            console.log('Data received:', response.data.items);
+            this.loanRequests = response.data.items;
+            this.totalRequests = response.data.totalCount;
+
+            this.loanRequests.forEach(request => {
+                this.fetchUser(request.UserID);
+            });
+        },
+        error => {
+            console.error('Error fetching loan requests:', error);
+        }
+    );
+}
+
+fetchUser(userId:string): void {
+    if (!this.userMap[userId]) {
+        this.userService.getUser(this.CompanyId, userId).subscribe(
             response => {
-                console.log('Data received:', response.data.items);
-                this.loanRequests = response.data.items;
-                this.totalRequests = response.data.totalCount;
+                if (response.data && response.data.email) {
+                    this.userMap[userId] = response.data;
+                    console.log('Data received:', response);
+                } else {
+                    console.error('Invalid response data:', response.data);
+                }
             },
             error => {
-                console.error('Error fetching loan requests:', error);
+                console.error('Error fetching user:', error);
             }
         );
     }
+}
 
     onPageChange(event: PageEvent): void {
         this.pageIndex = event.pageIndex;
@@ -157,9 +183,9 @@ export class MailboxListComponent implements OnInit, OnDestroy
 
 
 
-    selectedRequest: LoanRequest | null = null;
+    selectedRequest:   any | null = null;
 
-    viewDetails(request: LoanRequest): void {
+    viewDetails(request: any): void {
       this.selectedRequest = request;
     }
 

@@ -1,11 +1,8 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, Routes, UrlMatchResult, UrlSegment } from '@angular/router';
-import { MailboxDetailsComponent } from 'app/modules/admin/exit/exitPermission/details/details.component';
-import { MailboxEmptyDetailsComponent } from 'app/modules/admin/exit/exitPermission/empty-details/empty-details.component';
 import { MailboxListComponent } from 'app/modules/admin/exit/exitPermission/list/list.component';
 import { MailboxComponent } from 'app/modules/admin/exit/exitPermission/exitPermission.component';
 import { MailboxService } from 'app/modules/admin/exit/exitPermission/exitPermission.service';
-import { MailboxSettingsComponent } from 'app/modules/admin/exit/exitPermission/settings/settings.component';
 import { isEqual } from 'lodash-es';
 import { catchError, finalize, forkJoin, throwError } from 'rxjs';
 
@@ -265,25 +262,8 @@ export default [
                 resolve              : {
                     mails: mailsResolver,
                 },
-                children             : [
-                    {
-                        path     : '',
-                        pathMatch: 'full',
-                        component: MailboxEmptyDetailsComponent,
-                    },
-                    {
-                        path     : ':id',
-                        component: MailboxDetailsComponent,
-                        resolve  : {
-                            mail: mailResolver,
-                        },
-                    },
-                ],
-            },
-            {
-                path     : 'settings',
-                component: MailboxSettingsComponent,
-            },
+            }
+
         ],
     },
 ] as Routes;

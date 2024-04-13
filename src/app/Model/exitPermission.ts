@@ -17,7 +17,7 @@ export  interface ExitPermissionDetails {
     id?: string;
     reason?: string;
     status?: string;
-    user_id?: string;
+    UserId?: string;
     createdAt?: string;
   }
 
