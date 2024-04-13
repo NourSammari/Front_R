@@ -4,12 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterOutlet } from '@angular/router';
-import { Mail, MailCategory } from 'app/modules/admin/loan/loanRequest/loanRequest.types';
 import { Subject, takeUntil } from 'rxjs';
 import { LoanRequestsService } from 'app/Services/loanRequest.service';
 import { LoanRequest } from 'app/Model/loanRequest';
 import { UserData } from 'app/Model/session';
-import { Router , ActivatedRoute } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MailboxComponent } from '../loanRequest.component';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
@@ -28,21 +26,13 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class MailboxListComponent implements OnInit, OnDestroy
 {
-    @ViewChild('mailList') mailList: ElementRef;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
 
     totalRequests: number;
-    pageSizeOptions: number[] = [5, 10, 25, 50];
+    pageSizeOptions: number[] = [5, 10, 20, 50];
     pageIndex: number = 0;
     pageSize: number = 10;
-
-
-    category: MailCategory;
-    mails: Mail[];
-    mailsLoading: boolean = false;
-    pagination: any;
-    selectedMail: Mail;
     loanRequests: LoanRequest[] = [];
     userDataString = localStorage.getItem('userData');
     userData: UserData = JSON.parse(this.userDataString);
@@ -58,8 +48,6 @@ export class MailboxListComponent implements OnInit, OnDestroy
     constructor(
         private loanRequestsService: LoanRequestsService,
         public mailboxComponent: MailboxComponent,
-        private _router: Router,
-        private _activatedRoute: ActivatedRoute,
         private _fuseConfirmationService: FuseConfirmationService,
     )
     {
@@ -71,10 +59,10 @@ export class MailboxListComponent implements OnInit, OnDestroy
 
     ngOnInit(): void {
 
-        this.fetchLoanRequests(); // Fetch loan requests initially
+        this.fetchLoanRequests();
         setInterval(() => {
-        this.fetchLoanRequests(); // Fetch data periodically
-    }, 5000);
+            this.fetchLoanRequests();
+        }, 5000);
     }
 
     fetchLoanRequests(): void {
@@ -159,6 +147,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
                     this.loanRequestsService.deleteLoanRequest(userId, loanRequestId).subscribe(
                         response => {
                             console.log('Loan request deleted successfully:', response);
+                            this.fetchLoanRequests();
                             this.selectedRequest = null;
                         },
                         error => {
@@ -174,14 +163,12 @@ export class MailboxListComponent implements OnInit, OnDestroy
         const status = {
             Status: 'approved'
         };
-        // Call the updateLoanRequest method
         this.loanRequestsService.updateLoanRequest(userId, loanRequestId, status).subscribe(
             response => {
-                // Handle success response
                 console.log('Loan request updated successfully:', response);
+                this.fetchLoanRequests();
             },
             error => {
-                // Handle error response
                 console.error('Error updating loan request:', error);
             }
         );
@@ -191,14 +178,12 @@ export class MailboxListComponent implements OnInit, OnDestroy
         const status = {
             Status: 'refused'
         };
-        // Call the updateLoanRequest method
         this.loanRequestsService.updateLoanRequest(userId, loanRequestId, status).subscribe(
             response => {
-                // Handle success response
                 console.log('Loan request updated successfully:', response);
+                this.fetchLoanRequests();
             },
             error => {
-                // Handle error response
                 console.error('Error updating loan request:', error);
             }
         );

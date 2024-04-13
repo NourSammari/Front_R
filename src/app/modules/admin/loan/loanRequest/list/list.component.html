@@ -1,16 +1,14 @@
-<div class="relative flex flex-auto w-full bg-card dark:bg-transparent">
+<div class="relative flex flex-auto w-full lg:max-h-110 bg-card dark:bg-transparent">
     <!-- Requests list -->
-    <div class="relative flex flex-auto flex-col w-full min-w-0 lg:min-w-90 lg:max-w-90 border-r z-10 ">
-         <!-- Pagination -->
-         <div class="flex justify-between items-center p-4 bg-gray-100">
-
-             <!-- Pagination -->
-             <mat-paginator [pageIndex]="pageIndex"
-             [pageSize]="pageSize"
-             [pageSizeOptions]="pageSizeOptions"
-             [length]="totalRequests"
-             (page)="onPageChange($event)">
-              </mat-paginator>
+    <div class="relative flex flex-auto flex-col w-full min-w-0 lg:min-w-125 lg:max-w-125 max-h-110 border-r z-10 ">
+        <div class="items-center dark:bg-transparent">
+            <mat-paginator [pageIndex]="pageIndex"
+                        [pageSize]="pageSize"
+                        [pageSizeOptions]="pageSizeOptions"
+                        [length]="totalRequests"
+                        (page)="onPageChange($event)"
+                        style="font-size:12px;">
+            </mat-paginator>
         </div>
 
         <!-- Loading bar -->
@@ -112,7 +110,7 @@
             <!-- Footer -->
             <div class="flex items-center justify-center flex-auto border-t bg-gray-50 dark:bg-transparent">
                 <!-- Buttons -->
-                <ng-container *ngIf="!replyFormActive">
+                <ng-container *ngIf="selectedRequest && selectedRequest.status === 'pending'">
                     <div class="flex flex-wrap">
                         <!-- Approve -->
                         <button class="m-2" mat-stroked-button [color]="'primary'" (click)="approveRequest(selectedRequest.UserID, selectedRequest.ID)">
@@ -124,6 +122,11 @@
                             <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:arrow-uturn-left'"></mat-icon>
                             <span class="ml-2">Refuse</span>
                         </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selectedRequest && (selectedRequest.status === 'approved' || selectedRequest.status === 'refused')">
+                    <div class="flex flex-wrap">
+                        <span class="m-2">{{ selectedRequest.status }}</span>
                     </div>
                 </ng-container>
             </div>

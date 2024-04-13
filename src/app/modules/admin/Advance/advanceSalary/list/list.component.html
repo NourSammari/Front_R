@@ -1,21 +1,21 @@
-<div class="relative flex flex-auto w-200 bg-card dark:bg-transparent">
+<div class="relative flex flex-auto w-full lg:max-h-110 bg-card dark:bg-transparent">
+
     <!-- Requests list -->
-    <div class="relative flex flex-auto flex-col w-full min-w-0 lg:min-w-90 lg:max-w-90 border-r z-10 ">
+    <div class="relative flex flex-auto flex-col w-full min-w-0 lg:min-w-125 lg:max-w-125 max-h-110 border-r z-10 ">
 
        <!-- Pagination -->
-        <div class="items-center p-2 bg-gray-100">
+        <div class="items-center dark:bg-transparent">
             <mat-paginator [pageIndex]="pageIndex"
                         [pageSize]="pageSize"
                         [pageSizeOptions]="pageSizeOptions"
                         [length]="totalRequests"
                         (page)="onPageChange($event)"
-                        style="font-size: 12px; padding: 0;">
+                        style="font-size:12px;">
             </mat-paginator>
         </div>
 
 
 
-        <!-- Loading bar -->
         <!-- List of items -->
         <div class="overflow-y-auto">
             <!-- Item loop -->
@@ -125,13 +125,13 @@
     </div>
 </div>
 
-    <div class="w-full h-full p-4" *ngIf="!selectedRequest">
-         <!-- Select mail to read -->
-    <div class=" h-full flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
-        <mat-icon
-            class="icon-size-24"
-            [svgIcon]="'heroicons_outline:envelope'"></mat-icon>
-        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Select a request to read</div>
-    </div>
-    </div>
+<div class="w-full h-full p-4" *ngIf="!selectedRequest">
+    <!-- Select request to read -->
+<div class=" h-full w-full flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+   <mat-icon
+       class="icon-size-24"
+       [svgIcon]="'heroicons_outline:envelope'"></mat-icon>
+   <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Select a request to read</div>
+</div>
+</div>
 </div>

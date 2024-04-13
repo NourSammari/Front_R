@@ -60,7 +60,7 @@ export class InventoryListComponent implements OnInit
 
 
     totalQuestions: number;
-    pageSizeOptions: number[] = [5, 10, 25, 50];
+    pageSizeOptions: number[] = [5, 10, 20, 50];
     pageIndex: number = 0;
     pageSize: number = 10;
 

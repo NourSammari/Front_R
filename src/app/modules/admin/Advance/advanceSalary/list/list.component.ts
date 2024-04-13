@@ -27,20 +27,13 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class MailboxListComponent implements OnInit, OnDestroy
 {
-    @ViewChild('mailList') mailList: ElementRef;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
 
     totalRequests: number;
-    pageSizeOptions: number[] = [5, 10, 25, 50];
+    pageSizeOptions: number[] = [5, 10, 20, 50];
     pageIndex: number = 0;
     pageSize: number = 10;
-
-    category: MailCategory;
-    mails: Mail[];
-    mailsLoading: boolean = false;
-    pagination: any;
-    selectedMail: Mail;
     loanRequests: LoanRequest[] = [];
     userDataString = localStorage.getItem('userData');
     userData: UserData = JSON.parse(this.userDataString);
@@ -56,8 +49,6 @@ export class MailboxListComponent implements OnInit, OnDestroy
     constructor(
         private advanceSalaryRequestService: AdvanceSalaryRequestService,
         public mailboxComponent: MailboxComponent,
-        private _router: Router,
-        private _activatedRoute: ActivatedRoute,
         private _fuseConfirmationService: FuseConfirmationService,
     )
     {
@@ -69,10 +60,10 @@ export class MailboxListComponent implements OnInit, OnDestroy
 
     ngOnInit(): void {
 
-        this.fetchLoanRequests(); // Fetch loan requests initially
+        this.fetchLoanRequests();
         setInterval(() => {
-        this.fetchLoanRequests(); // Fetch data periodically
-    }, 5000);
+            this.fetchLoanRequests();
+        }, 5000);
     }
 
     fetchLoanRequests(): void {
@@ -88,8 +79,6 @@ export class MailboxListComponent implements OnInit, OnDestroy
             }
         );
     }
-
-    
 
     onPageChange(event: PageEvent): void {
         this.pageIndex = event.pageIndex;
@@ -175,7 +164,6 @@ export class MailboxListComponent implements OnInit, OnDestroy
     }
 
     deleteRequest(userId: string, RequestId: string): void {
-        // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
             title: 'Delete role',
             message: 'Are you sure you want to remove this role? This action cannot be undone!',
@@ -192,18 +180,16 @@ export class MailboxListComponent implements OnInit, OnDestroy
             }
         });
 
-        // Subscribe to confirmation result
         confirmation.afterClosed().subscribe(result => {
             if (result === 'confirmed') {
                 if (userId && RequestId) {
                     this.advanceSalaryRequestService.deleteAdvanceSalaryRequest(userId, RequestId).subscribe(
                         response => {
                             console.log('Loan request deleted successfully:', response);
-                            // Reset selectedRequest to null to hide the details side
+                            this.fetchLoanRequests();
                             this.selectedRequest = null;
                         },
                         error => {
-                            // Handle error response
                             console.error('Error deleting loan request:', error);
                         }
                     );
@@ -218,11 +204,10 @@ export class MailboxListComponent implements OnInit, OnDestroy
         };
         this.advanceSalaryRequestService.updateAdvanceSalaryRequest(userId, RequestId, status).subscribe(
             response => {
-                // Handle success response
                 console.log('Loan request updated successfully:', response);
+                this.fetchLoanRequests();
             },
             error => {
-                // Handle error response
                 console.error('Error updating loan request:', error);
             }
         );
@@ -232,14 +217,12 @@ export class MailboxListComponent implements OnInit, OnDestroy
         const status = {
             status: 'refused'
         };
-        // Call the updateLoanRequest method
         this.advanceSalaryRequestService.updateAdvanceSalaryRequest(userId, RequestId , status).subscribe(
             response => {
-                // Handle success response
                 console.log('Loan request updated successfully:', response);
+                this.fetchLoanRequests();
             },
             error => {
-                // Handle error response
                 console.error('Error updating loan request:', error);
             }
         );

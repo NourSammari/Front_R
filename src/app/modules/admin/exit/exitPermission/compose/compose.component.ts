@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ExitPermissionService } from 'app/Services/exitPermission.service';
 import { UserData } from 'app/Model/session';
 
+
 @Component({
     selector: 'mailbox-compose',
     templateUrl: './compose.component.html',
@@ -36,7 +37,8 @@ export class MailboxComposeComponent implements OnInit {
     constructor(
         public matDialogRef: MatDialogRef<MailboxComposeComponent>,
         private formBuilder: FormBuilder,
-        private exitPermissionService: ExitPermissionService
+        private exitPermissionService: ExitPermissionService,
+
     ) {}
 
     ngOnInit(): void {
@@ -75,12 +77,11 @@ export class MailboxComposeComponent implements OnInit {
 
             this.exitPermissionService.addExitPermission(this.CompanyId, request).subscribe(
                 response => {
-                    // Handle success response
                     console.log('Exit permission added successfully:', response);
+
                     this.matDialogRef.close();
                 },
                 error => {
-                    // Handle error response
                     console.error('Error adding exit permission:', error);
                 }
             );
