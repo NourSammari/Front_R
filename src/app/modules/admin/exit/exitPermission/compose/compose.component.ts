@@ -1,115 +1,91 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { QuillEditorComponent } from 'ngx-quill';
+import { AdvanceSalaryRequestService } from 'app/Services/advanceSalary.service';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { QuillEditorComponent } from 'ngx-quill';
+import { ExitPermissionService } from 'app/Services/exitPermission.service';
+import { UserData } from 'app/Model/session';
 
 @Component({
-    selector     : 'mailbox-compose',
-    templateUrl  : './compose.component.html',
+    selector: 'mailbox-compose',
+    templateUrl: './compose.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone   : true,
     imports      : [MatButtonModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgIf, QuillEditorComponent],
 })
-export class MailboxComposeComponent implements OnInit
-{
+export class MailboxComposeComponent implements OnInit {
+    userDataString = localStorage.getItem('userData');
+    userData: UserData;
+    CompanyId: string;
     composeForm: UntypedFormGroup;
-    copyFields: { cc: boolean; bcc: boolean } = {
-        cc : false,
-        bcc: false,
-    };
+
     quillModules: any = {
         toolbar: [
             ['bold', 'italic', 'underline'],
-            [{align: []}, {list: 'ordered'}, {list: 'bullet'}],
+            [{ align: [] }, { list: 'ordered' }, { list: 'bullet' }],
             ['clean'],
         ],
     };
 
-    /**
-     * Constructor
-     */
     constructor(
         public matDialogRef: MatDialogRef<MailboxComposeComponent>,
-        private _formBuilder: UntypedFormBuilder,
-    )
-    {
-    }
+        private formBuilder: FormBuilder,
+        private exitPermissionService: ExitPermissionService
+    ) {}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
+    ngOnInit(): void {
+        this.userData = JSON.parse(this.userDataString);
+        this.CompanyId = this.userData?.data?.user?.workCompanyId || '';
 
-    /**
-     * On init
-     */
-    ngOnInit(): void
-    {
-        // Create the form
-        this.composeForm = this._formBuilder.group({
-            to     : ['', [Validators.required, Validators.email]],
-            cc     : ['', [Validators.email]],
-            bcc    : ['', [Validators.email]],
-            subject: [''],
-            body   : ['', [Validators.required]],
+        this.composeForm = this.formBuilder.group({
+            reason: ['', Validators.required],
+            start_time: [''],
+            return_time: [''],
+            type: [''],
         });
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Show the copy field with the given field name
-     *
-     * @param name
-     */
-    showCopyField(name: string): void
-    {
-        // Return if the name is not one of the available names
-        if ( name !== 'cc' && name !== 'bcc' )
-        {
-            return;
-        }
-
-        // Show the field
-        this.copyFields[name] = true;
-    }
-
-    /**
-     * Save and close
-     */
-    saveAndClose(): void
-    {
-        // Save the message as a draft
+    saveAndClose(): void {
         this.saveAsDraft();
-
-        // Close the dialog
         this.matDialogRef.close();
     }
 
-    /**
-     * Discard the message
-     */
-    discard(): void
-    {
+    discard(): void {
+        // Implement discard functionality if needed
     }
 
-    /**
-     * Save the message as a draft
-     */
-    saveAsDraft(): void
-    {
+    saveAsDraft(): void {
+        // Implement save as draft functionality if needed
     }
 
-    /**
-     * Send the message
-     */
-    send(): void
-    {
+    send(): void {
+        if (this.composeForm.valid) {
+            const request = {
+                reason: this.composeForm.value.reason,
+                start_date: this.composeForm.value.start_time,
+                return_date: this.composeForm.value.return_time,
+                type: this.composeForm.value.type,
+            };
+
+            this.exitPermissionService.addExitPermission(this.CompanyId, request).subscribe(
+                response => {
+                    // Handle success response
+                    console.log('Exit permission added successfully:', response);
+                    this.matDialogRef.close();
+                },
+                error => {
+                    // Handle error response
+                    console.error('Error adding exit permission:', error);
+                }
+            );
+        } else {
+            console.error('Form is invalid');
+        }
     }
 }

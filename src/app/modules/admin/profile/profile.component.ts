@@ -13,8 +13,9 @@ import { FuseCardComponent } from '@fuse/components/card';
 import { MatDialog } from '@angular/material/dialog';
 import { EditInfosComponent } from 'app/modules/admin/profile/EditInfos/labels.component';
 import { EditExperienceComponent } from 'app/modules/admin/profile/EditExperience/labels.component';
-
-
+import { UserService } from 'app/Services/user-service.service';
+import { UsersDetails  } from 'app/Model/user';
+import { UserData } from 'app/Model/session';
 
 
 @Component({
@@ -27,12 +28,51 @@ import { EditExperienceComponent } from 'app/modules/admin/profile/EditExperienc
 })
 export class ProfileComponent
 {
+    user: any;
+
+    userDataString = localStorage.getItem('userData');
+    userData: UserData = JSON.parse(this.userDataString);
+    UserId = this.userData.data.user.ID || '';
+    CompanyId = this.userData.data.user.workCompanyId || '';
     /**
      * Constructor
      */
-    constructor(private _matDialog: MatDialog,)
+    constructor(private _matDialog: MatDialog,
+        private userService: UserService,
+        )
     {
     }
+
+    ngOnInit(): void {
+
+        this.fetchUser();
+        /*setInterval(() => {
+        this.fetchUser();
+    }, 5000);*/
+    }
+
+    fetchUser(): void {
+        console.log('Fetching user...');
+        this.userService.getUser(this.CompanyId, this.UserId).subscribe(
+            response => {
+
+
+                // Ensure that the structure of response.data matches your expectations
+                if (response.data && response.data.email) {
+                    this.user = response.data;
+                    console.log('Data received:', response);
+                    console.log('user emaillll : ', this.user);
+
+                } else {
+                    console.error('Invalid response data:', response.data);
+                }
+            },
+            error => {
+                console.error('Error fetching user:', error);
+            }
+        );
+    }
+
 
     /**
      * Open the edit labels dialog

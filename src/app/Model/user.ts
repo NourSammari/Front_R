@@ -1,19 +1,71 @@
 export interface Users {
-    id?: string; // Unique identifier for the user
-    firstName?: string; // The user's first name
-    lastName?: string; // The user's last name
-    email?: string; // User's email address (unique)
-    password?: string; // User's Password
-    dateOfBirth?: Date; // User's date of birth
-    gender?: string; // User's gender
-    address?: string; // User's address
-    country?: string; // User's country
-    phoneNumber?: string; // User's phone number
-    dateOfHire?: Date; // User's date of hire
-    leaveBalance?: number; // User's leave balance
-    cvPath?: string; // Path to user's CV
-    lastLogin?: Date; // The last time the user authenticated (optional)
-    departmentName?: string; // User's department name
-   // roleId?: string; // ID of the role assigned to the user
-    companyId?: string; // ID of the company to which the user belongs
+    id?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+    dateOfBirth?: Date;
+    gender?: string;
+    address?: string;
+    country?: string;
+    phoneNumber?: string;
+    dateOfHire?: Date;
+    leaveBalance?: number;
+    cvPath?: string;
+    lastLogin?: Date;
+    departmentName?: string;
+ // roleId?: string;
+    companyId?: string;
   }
+
+export interface User {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    roleName?: string;
+    companyID: string;
+    country?: string;
+    status?: boolean;
+    createdAt?: Date;
+  }
+
+  export interface UsersPagination {
+    items: User[];
+    page: number;
+    limit: number;
+    totalCount: number;
+  }
+
+  export interface UsersTable {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    createdAt: Date;
+  }
+
+  export interface UsersList {
+    id: string;
+    name: string;
+  }
+
+  export interface UsersCount {
+    count: number;
+  }
+
+  export interface UsersDetails {
+    id?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    country?: string;
+    status?: boolean;
+    createdAt?: Date;
+  }
+
+  export interface AddTrainingUser {
+    id: string;
+  }
+

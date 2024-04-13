@@ -1,12 +1,15 @@
 import { NgIf } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { QuillEditorComponent } from 'ngx-quill';
+import { AdvanceSalaryRequestService } from 'app/Services/advanceSalary.service';
+import { UserData } from 'app/Model/session';
+
 
 @Component({
     selector     : 'mailbox-compose',
@@ -17,6 +20,9 @@ import { QuillEditorComponent } from 'ngx-quill';
 })
 export class MailboxComposeComponent implements OnInit
 {
+    userDataString = localStorage.getItem('userData');
+    userData: UserData = JSON.parse(this.userDataString);
+    CompanyId = this.userData.data.user.workCompanyId || '';
     composeForm: UntypedFormGroup;
     copyFields: { cc: boolean; bcc: boolean } = {
         cc : false,
@@ -30,12 +36,14 @@ export class MailboxComposeComponent implements OnInit
         ],
     };
 
+
     /**
      * Constructor
      */
     constructor(
         public matDialogRef: MatDialogRef<MailboxComposeComponent>,
-        private _formBuilder: UntypedFormBuilder,
+        private formBuilder: FormBuilder,
+        private advanceSalaryRequestService: AdvanceSalaryRequestService,
     )
     {
     }
@@ -49,35 +57,10 @@ export class MailboxComposeComponent implements OnInit
      */
     ngOnInit(): void
     {
-        // Create the form
-        this.composeForm = this._formBuilder.group({
-            to     : ['', [Validators.required, Validators.email]],
-            cc     : ['', [Validators.email]],
-            bcc    : ['', [Validators.email]],
-            subject: [''],
-            body   : ['', [Validators.required]],
+        this.composeForm = this.formBuilder.group({
+            amount: ['', [Validators.required]],
+            reason: [''],
         });
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Show the copy field with the given field name
-     *
-     * @param name
-     */
-    showCopyField(name: string): void
-    {
-        // Return if the name is not one of the available names
-        if ( name !== 'cc' && name !== 'bcc' )
-        {
-            return;
-        }
-
-        // Show the field
-        this.copyFields[name] = true;
     }
 
     /**
@@ -106,10 +89,32 @@ export class MailboxComposeComponent implements OnInit
     {
     }
 
-    /**
-     * Send the message
-     */
-    send(): void
-    {
+    send(): void {
+        if (this.composeForm.valid) {
+            const Amount: number = parseFloat(this.composeForm.value.amount);
+
+            // Check if the conversion is successful
+            if (!isNaN(Amount)) {
+
+                const request = {
+                    amount: Amount,
+                    Reason: this.composeForm.value.reason,
+                };
+
+                this.advanceSalaryRequestService.createAdvanceSalaryRequest(this.CompanyId, request).subscribe(
+                    response => {
+                        // Handle success response
+                        console.log('Loan request added successfully:', response);
+                        this.matDialogRef.close();
+                    },
+                    error => {
+                        // Handle error response
+                        console.error('Error adding loan request:', error);
+                    }
+                );
+            } else {
+                console.error('LoanAmount is not a valid number');
+            }
+        }
     }
 }

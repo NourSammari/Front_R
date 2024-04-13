@@ -264,6 +264,19 @@ export default [
                 },
 
             },
+            
         ],
     },
+    {
+         path     : '',
+        component: MailboxComponent,
+        resolve  : {
+            filters: () => inject(MailboxService).getFilters(),
+            folders: () => inject(MailboxService).getFolders(),
+            labels : () => inject(MailboxService).getLabels(),
+        },
+        children : [
+
+        ],
+    }
 ] as Routes;

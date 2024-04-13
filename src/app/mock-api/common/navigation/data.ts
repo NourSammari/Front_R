@@ -75,6 +75,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         ],
     },
     {
+        id   : 'questions',
+        title: 'Questions',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/questions'
+    },
+    {
         id   : 'missions',
         title: 'Missions',
         type : 'basic',

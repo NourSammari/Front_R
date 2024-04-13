@@ -53,7 +53,7 @@ import { AddComponent } from 'app/modules/admin/role/inventory/add/add.component
     standalone     : true,
     imports        : [NgIf, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
 })
-export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
+export class InventoryListComponent implements OnInit, OnDestroy
 {
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
@@ -184,71 +184,9 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
-        // Subscribe to search input field value changes
-        this.searchInputControl.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                debounceTime(300),
-                switchMap((query) =>
-                {
-                    this.closeDetails();
-                    this.isLoading = true;
-                    return this._inventoryService.getProducts(0, 10, 'name', 'asc', query);
-                }),
-                map(() =>
-                {
-                    this.isLoading = false;
-                }),
-            )
-            .subscribe();
-    }
-
-
-    /**
-     * After view init
-     */
-    ngAfterViewInit(): void
-    {
-        if ( this._sort && this._paginator )
-        {
-            // Set the initial sort
-            this._sort.sort({
-                id          : 'name',
-                start       : 'asc',
-                disableClear: true,
-            });
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-
-            // If the user changes the sort order...
-            this._sort.sortChange
-                .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(() =>
-                {
-                    // Reset back to the first page
-                    this._paginator.pageIndex = 0;
-
-                    // Close the details
-                    this.closeDetails();
-                });
-
-            // Get products if sort or page changes
-            merge(this._sort.sortChange, this._paginator.page).pipe(
-                switchMap(() =>
-                {
-                    this.closeDetails();
-                    this.isLoading = true;
-                    return this._inventoryService.getProducts(this._paginator.pageIndex, this._paginator.pageSize, this._sort.active, this._sort.direction);
-                }),
-                map(() =>
-                {
-                    this.isLoading = false;
-                }),
-            ).subscribe();
         }
-    }
+
+
 
     /**
      * On destroy
@@ -275,7 +213,6 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
         if ( this.selectedProduct && this.selectedProduct.id === productId )
         {
             // Close the details
-            this.closeDetails();
             return;
         }
 
@@ -310,22 +247,14 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
           this._matDialog.open(UpdateComponent, {autoFocus: false});
       }
 
-           /**
+        /**
      * Open the add dialog
      */
-           openAddDialog(): void
-           {
-               this._matDialog.open(AddComponent, {autoFocus: false});
-           }
+        openAddDialog(): void
+        {
+            this._matDialog.open(AddComponent, {autoFocus: false});
+        }
 
-
-    /**
-     * Close the details
-     */
-    closeDetails(): void
-    {
-        this.selectedProduct = null;
-    }
 
     /**
      * Cycle through images of selected product
@@ -600,7 +529,6 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._inventoryService.deleteProduct(product.id).subscribe(() =>
                 {
                     // Close the details
-                    this.closeDetails();
                 });
             }
         });

@@ -1,7 +1,5 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, Routes, UrlMatchResult, UrlSegment } from '@angular/router';
-import { MailboxDetailsComponent } from 'app/modules/admin/advance/advanceSalary/details/details.component';
-import { MailboxEmptyDetailsComponent } from 'app/modules/admin/advance/advanceSalary/empty-details/empty-details.component';
 import { MailboxListComponent } from 'app/modules/admin/advance/advanceSalary/list/list.component';
 import { MailboxComponent } from 'app/modules/admin/advance/advanceSalary/advanceSalary.component';
 import { MailboxService } from 'app/modules/admin/advance/advanceSalary/advanceSalary.service';
@@ -265,25 +263,30 @@ export default [
                 resolve              : {
                     mails: mailsResolver,
                 },
-                children             : [
-                    {
-                        path     : '',
-                        pathMatch: 'full',
-                        component: MailboxEmptyDetailsComponent,
-                    },
-                    {
-                        path     : ':id',
-                        component: MailboxDetailsComponent,
-                        resolve  : {
-                            mail: mailResolver,
-                        },
-                    },
-                ],
+
             },
-            {
-                path     : 'settings',
-                component: MailboxSettingsComponent,
-            },
+            
         ],
     },
+    {
+         path     : '',
+        component: MailboxComponent,
+        resolve  : {
+            filters: () => inject(MailboxService).getFilters(),
+            folders: () => inject(MailboxService).getFolders(),
+            labels : () => inject(MailboxService).getLabels(),
+        },
+        children : [
+            {
+                component            : MailboxListComponent,
+                matcher              : mailboxRouteMatcher,
+                runGuardsAndResolvers: mailboxRunGuardsAndResolvers,
+                resolve              : {
+                    mails: mailsResolver,
+                },
+
+            },
+
+        ],
+    }
 ] as Routes;

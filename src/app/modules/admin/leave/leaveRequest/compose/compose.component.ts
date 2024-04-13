@@ -1,12 +1,15 @@
 import { NgIf } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { QuillEditorComponent } from 'ngx-quill';
+import { LeaveRequestService } from 'app/Services/leaveRequest.service';
+import { UserData } from 'app/Model/session';
+
 
 @Component({
     selector     : 'mailbox-compose',
@@ -17,11 +20,10 @@ import { QuillEditorComponent } from 'ngx-quill';
 })
 export class MailboxComposeComponent implements OnInit
 {
-    composeForm: UntypedFormGroup;
-    copyFields: { cc: boolean; bcc: boolean } = {
-        cc : false,
-        bcc: false,
-    };
+    composeForm: FormGroup;
+    userDataString = localStorage.getItem('userData');
+    userData: UserData = JSON.parse(this.userDataString);
+    CompanyId = this.userData.data.user.workCompanyId || '';
     quillModules: any = {
         toolbar: [
             ['bold', 'italic', 'underline'],
@@ -36,6 +38,8 @@ export class MailboxComposeComponent implements OnInit
     constructor(
         public matDialogRef: MatDialogRef<MailboxComposeComponent>,
         private _formBuilder: UntypedFormBuilder,
+        private leaveRequestService: LeaveRequestService,
+
     )
     {
     }
@@ -49,38 +53,22 @@ export class MailboxComposeComponent implements OnInit
      */
     ngOnInit(): void
     {
-        // Create the form
-        this.composeForm = this._formBuilder.group({
-            to     : ['', [Validators.required, Validators.email]],
-            cc     : ['', [Validators.email]],
-            bcc    : ['', [Validators.email]],
-            subject: [''],
-            body   : ['', [Validators.required]],
-        });
+
+
+     {
+            this.composeForm = this._formBuilder.group({
+            start_date: ['', Validators.required],
+            end_date: ['', Validators.required],
+            type: [''],
+            reason: ['']
+            });
+  }
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Show the copy field with the given field name
-     *
-     * @param name
-     */
-    showCopyField(name: string): void
-    {
-        // Return if the name is not one of the available names
-        if ( name !== 'cc' && name !== 'bcc' )
-        {
-            return;
-        }
-
-        // Show the field
-        this.copyFields[name] = true;
-    }
-
-    /**
+/**
      * Save and close
      */
     saveAndClose(): void
@@ -106,10 +94,37 @@ export class MailboxComposeComponent implements OnInit
     {
     }
 
-    /**
-     * Send the message
-     */
-    send(): void
-    {
+
+
+
+    send(): void {
+        if (this.composeForm.valid) {
+
+            if (this.composeForm.valid) {
+                const request = {
+                    start_date: this.composeForm.value.start_date,
+                    end_date: this.composeForm.value.end_date,
+                    leave_type: this.composeForm.value.type,
+                    reason: this.composeForm.value.reason
+                };
+            const Amount: number = parseFloat(this.composeForm.value.amount);
+
+            
+
+                this.leaveRequestService.createLeaveRequest(this.CompanyId, request).subscribe(
+                    response => {
+                        // Handle success response
+                        console.log('Loan request added successfully:', response);
+                        this.matDialogRef.close();
+                    },
+                    error => {
+                        // Handle error response
+                        console.error('Error adding loan request:', error);
+                    }
+                );
+            } else {
+                console.error('LoanAmount is not a valid number');
+            }
+        }
     }
 }

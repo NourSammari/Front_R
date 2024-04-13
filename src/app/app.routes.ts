@@ -91,6 +91,8 @@ export const appRoutes: Route[] = [
             {path: 'tests', loadChildren: () => import('app/modules/admin/tests/tests.routes')},
             {path: 'company', loadChildren: () => import('app/modules/admin/Company/company.routes')},
             {path: 'role', loadChildren: () => import('app/modules/admin/role/role.routes')},
+            {path: 'questions', loadChildren: () => import('app/modules/admin/questions/questions.routes')},
+
             {path: 'project', loadChildren: () => import('app/modules/admin/project/project.routes')},
 
         ]

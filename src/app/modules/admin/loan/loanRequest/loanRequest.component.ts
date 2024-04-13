@@ -5,6 +5,7 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Subject, takeUntil } from 'rxjs';
 import { MailboxSidebarComponent } from './sidebar/sidebar.component';
 
+
 @Component({
     selector     : 'mailbox',
     templateUrl  : './loanRequest.component.html',

@@ -26,12 +26,11 @@ export class MailboxComposeComponent implements OnInit {
 
     constructor(
         public matDialogRef: MatDialogRef<MailboxComposeComponent>,
-        private formBuilder: FormBuilder, // Use FormBuilder directly
-        private loanRequestService: LoanRequestsService // Use the loan requests service directly
+        private formBuilder: FormBuilder,
+        private loanRequestService: LoanRequestsService 
     ) {}
 
     ngOnInit(): void {
-        // Create the form
         this.composeForm = this.formBuilder.group({
             Loan_amount: ['', [Validators.required]],
             Loan_duration: [''],

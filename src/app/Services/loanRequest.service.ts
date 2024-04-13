@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders , HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LoanRequest } from 'app/Model/loanRequest';
 import { LoanRequestIn } from 'app/Model/loanRequest';
@@ -18,11 +18,9 @@ export class LoanRequestsService {
   private headers: HttpHeaders;
 
   constructor(private http: HttpClient) {
-    // Get the userData from localStorage
     const userDataString = localStorage.getItem('userData');
     let accessToken = '';
 
-    // Parse the userData to extract the access token
     if (userDataString) {
       try {
         const userData: UserData = JSON.parse(userDataString);
@@ -34,10 +32,8 @@ export class LoanRequestsService {
       console.warn('No userData found in localStorage');
     }
 
-    // Log the token value for debugging
     console.log('Access Token:', accessToken);
 
-    // Clone the request and add the token to the headers if it exists
     this.headers = new HttpHeaders();
     if (accessToken) {
       this.headers = this.headers.set('Authorization', `Bearer ${accessToken}`);
@@ -48,12 +44,16 @@ export class LoanRequestsService {
     return this.http.post(`${this.apiUrl}/loan_requests/${companyId}`, request, { headers: this.headers });
   }
 
-  getAllLoanRequestsByUser(userId: string, page: number, limit: number): Observable<LoanRequestPagination> {
-    return this.http.get<LoanRequestPagination>(`${this.apiUrl}/loan_requests/user/${userId}?page=${page}&limit=${limit}`, { headers: this.headers });
+  getAllLoanRequestsByUser(userId: string, page: number, limit: number): Observable<ApiResponse> {
+    return this.http.get<ApiResponse>(`${this.apiUrl}/loan_requests/user/${userId}?page=${page}&limit=${limit}`, { headers: this.headers });
   }
 
-  getAllLoanRequestsByCompany(companyId: string): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${this.apiUrl}/loan_requests/company/${companyId}`, { headers: this.headers });
+
+  getAllLoanRequestsByCompany(companyId: string , page : number , limit : number): Observable<ApiResponse> {
+    const params = new HttpParams()
+    .set('page', page.toString())
+    .set('limit', limit.toString());
+    return this.http.get<ApiResponse>(`${this.apiUrl}/loan_requests/company/${companyId}?page=${page}&limit=${limit}`,  { params: params, headers: this.headers });
   }
 
   getLoanRequestsCountByUser(userId: string): Observable<LoanRequestCount> {
@@ -63,7 +63,7 @@ export class LoanRequestsService {
   getLoanRequestsCountByCompany(companyId: string): Observable<LoanRequestCount> {
     return this.http.get<LoanRequestCount>(`${this.apiUrl}/loan_requests/company/${companyId}/count`, { headers: this.headers });
   }
- 
+
   getLoanRequestById(userId: string, loanRequestId: string): Observable<LoanRequest> {
     return this.http.get<LoanRequest>(`${this.apiUrl}/loan_requests/user/${userId}/${loanRequestId}`, { headers: this.headers });
   }
