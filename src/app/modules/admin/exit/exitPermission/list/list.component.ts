@@ -61,9 +61,9 @@ export class MailboxListComponent implements OnInit, OnDestroy
 
     ngOnInit(): void {
 
-        this.fetchLoanRequests();
+        this.fetchRequests();
         setInterval(() => {
-            this.fetchLoanRequests();
+            this.fetchRequests();
         }, 5000);
     }
 
@@ -71,7 +71,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
 
     userMap: { [userId: string]: any } = {};
 
-        fetchLoanRequests(): void {
+        fetchRequests(): void {
             console.log('Fetching loan requests...');
             this.exitPermissionService.getAllExitPermissionsByCompany(this.CompanyId, this.pageIndex + 1, this.pageSize).subscribe(
                 response => {
@@ -144,7 +144,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
     onPageChange(event: PageEvent): void {
         this.pageIndex = event.pageIndex;
         this.pageSize = event.pageSize;
-        this.fetchLoanRequests();
+        this.fetchRequests();
     }
 
     selectedRequest: LoanRequest | null = null;
@@ -176,7 +176,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
                     this.exitPermissionService.deleteExitPermission(userId, RequestId).subscribe(
                         response => {
                             console.log('Loan request deleted successfully:', response);
-                            this.fetchLoanRequests();
+                            this.fetchRequests();
                             this.selectedRequest = null;
                         },
                         error => {
@@ -195,7 +195,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
         this.exitPermissionService.updateExitPermission(userId, RequestId, status).subscribe(
             response => {
                 console.log('Loan request updated successfully:', response);
-                this.fetchLoanRequests();
+                this.fetchRequests();
             },
             error => {
                 console.error('Error updating loan request:', error);
@@ -210,7 +210,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
         this.exitPermissionService.updateExitPermission(userId, RequestId , status).subscribe(
             response => {
                 console.log('Loan request updated successfully:', response);
-                this.fetchLoanRequests();
+                this.fetchRequests();
             },
             error => {
                 console.error('Error updating loan request:', error);

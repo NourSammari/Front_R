@@ -63,15 +63,15 @@ export class MailboxListComponent implements OnInit, OnDestroy
 
     ngOnInit(): void {
 
-        this.fetchLoanRequests();
+        this.fetchRequests();
         setInterval(() => {
-            this.fetchLoanRequests();
+            this.fetchRequests();
         }, 5000);
     }
 
     userMap: { [userId: string]: any } = {};
 
-        fetchLoanRequests(): void {
+        fetchRequests(): void {
             console.log('Fetching leave requests...');
             this.loanRequestsService.getAllLoanRequestsByCompany(this.CompanyId, this.pageIndex + 1, this.pageSize).subscribe(
                 response => {
@@ -144,7 +144,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
     onPageChange(event: PageEvent): void {
         this.pageIndex = event.pageIndex;
         this.pageSize = event.pageSize;
-        this.fetchLoanRequests();
+        this.fetchRequests();
     }
 
     selectedRequest: LoanRequest | null = null;
@@ -175,7 +175,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
                     this.loanRequestsService.deleteLoanRequest(userId, loanRequestId).subscribe(
                         response => {
                             console.log('Loan request deleted successfully:', response);
-                            this.fetchLoanRequests();
+                            this.fetchRequests();
                             this.selectedRequest = null;
                         },
                         error => {
@@ -194,7 +194,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
         this.loanRequestsService.updateLoanRequest(userId, loanRequestId, status).subscribe(
             response => {
                 console.log('Loan request updated successfully:', response);
-                this.fetchLoanRequests();
+                this.fetchRequests();
             },
             error => {
                 console.error('Error updating loan request:', error);
@@ -209,7 +209,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
         this.loanRequestsService.updateLoanRequest(userId, loanRequestId, status).subscribe(
             response => {
                 console.log('Loan request updated successfully:', response);
-                this.fetchLoanRequests();
+                this.fetchRequests();
             },
             error => {
                 console.error('Error updating loan request:', error);

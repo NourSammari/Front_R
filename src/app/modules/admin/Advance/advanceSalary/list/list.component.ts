@@ -62,15 +62,15 @@ export class MailboxListComponent implements OnInit, OnDestroy
 
     ngOnInit(): void {
 
-        this.fetchLoanRequests();
+        this.fetchRequests();
         setInterval(() => {
-            this.fetchLoanRequests();
+            this.fetchRequests();
         }, 5000);
     }
 
     userMap: { [userId: string]: any } = {};
 
-fetchLoanRequests(): void {
+fetchRequests(): void {
     console.log('Fetching loan requests...');
     this.advanceSalaryRequestService.getAdvanceSalaryRequestsByCompany(this.CompanyId, this.pageIndex + 1, this.pageSize).subscribe(
         response => {
@@ -109,7 +109,7 @@ fetchUser(userId:string): void {
     onPageChange(event: PageEvent): void {
         this.pageIndex = event.pageIndex;
         this.pageSize = event.pageSize;
-        this.fetchLoanRequests();
+        this.fetchRequests();
     }
 
     /*fetchLoanRefusedRequests(): void {
@@ -212,7 +212,7 @@ fetchUser(userId:string): void {
                     this.advanceSalaryRequestService.deleteAdvanceSalaryRequest(userId, RequestId).subscribe(
                         response => {
                             console.log('Loan request deleted successfully:', response);
-                            this.fetchLoanRequests();
+                            this.fetchRequests();
                             this.selectedRequest = null;
                         },
                         error => {
@@ -231,7 +231,7 @@ fetchUser(userId:string): void {
         this.advanceSalaryRequestService.updateAdvanceSalaryRequest(userId, RequestId, status).subscribe(
             response => {
                 console.log('Loan request updated successfully:', response);
-                this.fetchLoanRequests();
+                this.fetchRequests();
             },
             error => {
                 console.error('Error updating loan request:', error);
@@ -246,7 +246,7 @@ fetchUser(userId:string): void {
         this.advanceSalaryRequestService.updateAdvanceSalaryRequest(userId, RequestId , status).subscribe(
             response => {
                 console.log('Loan request updated successfully:', response);
-                this.fetchLoanRequests();
+                this.fetchRequests();
             },
             error => {
                 console.error('Error updating loan request:', error);

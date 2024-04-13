@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterOutlet } from '@angular/router';
-import { Mail, MailCategory } from 'app/modules/admin/loan/loanRequest/loanRequest.types';
 import { Subject, takeUntil } from 'rxjs';
 import { LeaveRequestService } from 'app/Services/leaveRequest.service';
 import { LoanRequest } from 'app/Model/loanRequest';
@@ -13,7 +12,6 @@ import { Router , ActivatedRoute } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MailboxComponent } from '../leaveRequest.component';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { LeaveRequestDetails } from 'app/Model/leaveRequest';
 import { RouterLink } from '@angular/router';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
@@ -63,16 +61,16 @@ export class MailboxListComponent implements OnInit, OnDestroy
 
     ngOnInit(): void {
 
-        this.fetchLoanRequests();
+        this.fetchRequests();
         setInterval(() => {
-        this.fetchLoanRequests();
+        this.fetchRequests();
     }, 5000);
     }
 
 
     userMap: { [userId: string]: any } = {};
 
-        fetchLoanRequests(): void {
+        fetchRequests(): void {
             console.log('Fetching leave requests...');
             this.leaveRequestService.getLeaveRequestsByCompany(this.CompanyId, this.pageIndex + 1, this.pageSize).subscribe(
                 response => {
@@ -145,7 +143,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
     onPageChange(event: PageEvent): void {
         this.pageIndex = event.pageIndex;
         this.pageSize = event.pageSize;
-        this.fetchLoanRequests();
+        this.fetchRequests();
     }
 
     selectedRequest: LoanRequest | null = null;
@@ -177,7 +175,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
                     this.leaveRequestService.deleteLeaveRequest(userId, RequestId).subscribe(
                         response => {
                             console.log('Loan request deleted successfully:', response);
-                            this.fetchLoanRequests();
+                            this.fetchRequests();
                             this.selectedRequest = null;
                         },
                         error => {
@@ -196,7 +194,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
         this.leaveRequestService.updateLeaveRequest(userId, RequestId, status).subscribe(
             response => {
                 console.log('Loan request updated successfully:', response);
-                this.fetchLoanRequests();
+                this.fetchRequests();
             },
             error => {
                 console.error('Error updating loan request:', error);
@@ -211,7 +209,7 @@ export class MailboxListComponent implements OnInit, OnDestroy
         this.leaveRequestService.updateLeaveRequest(userId, RequestId , status).subscribe(
             response => {
                 console.log('Loan request updated successfully:', response);
-                this.fetchLoanRequests();
+                this.fetchRequests();
             },
             error => {
                 console.error('Error updating loan request:', error);
