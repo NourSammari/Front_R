@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from 'app/Model/user';
+import { User, UserIn } from 'app/Model/user';
 import { ApiResponse } from 'app/Model/apiresponse';
 
 @Injectable({
@@ -12,6 +12,7 @@ export class UserService {
   private headers: HttpHeaders;
 
   constructor(private http: HttpClient) {
+
     const userDataString = localStorage.getItem('userData');
     let accessToken = '';
 
@@ -32,10 +33,11 @@ export class UserService {
     if (accessToken) {
       this.headers = this.headers.set('Authorization', `Bearer ${accessToken}`);
     }
+    console.log("headerrrrr for user :",this.headers);
   }
 
-  createUser(Companyid: string,user: User): Observable<User> {
-    return this.http.post<User>(`${this.baseUrl}/${Companyid}`, user, { headers: this.headers });
+  createUser(Companyid: string, user: UserIn): Observable<any> {
+    return this.http.post<UserIn>(`${this.baseUrl}/${Companyid}`, user , { headers: this.headers });
   }
 
   getUsers(Companyid: string): Observable<ApiResponse> {

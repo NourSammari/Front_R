@@ -91,9 +91,9 @@ export class InventoryListComponent implements OnInit
 
     ngOnInit(): void {
 
-        this.fetchQuestions(); // Fetch loan requests initially
+        this.fetchQuestions();
         setInterval(() => {
-        this.fetchQuestions(); // Fetch data periodically
+        this.fetchQuestions(); 
     }, 5000);
     }
 

@@ -98,10 +98,7 @@ export class ContactsListComponent implements OnInit, OnDestroy
         this.searchInputControl.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeAll),
-                switchMap(query =>
-
-                    // Search
-                    this._contactsService.searchContacts(query),
+                switchMap(query =>this._contactsService.searchContacts(query),
                 ),
             )
             .subscribe();

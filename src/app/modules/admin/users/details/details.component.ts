@@ -21,12 +21,13 @@ import { ContactsService } from 'app/modules/admin/users/contacts.service';
 import { Contact, Country, Tag } from 'app/modules/admin/users/contacts.types';
 import { ContactsListComponent } from 'app/modules/admin/users/list/list.component';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { UserService } from 'app/Services/user-service.service';
+import { UserData } from 'app/Model/session';
 
 @Component({
     selector       : 'contacts-details',
     templateUrl    : './details.component.html',
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone     : true,
     imports        : [NgIf, MatButtonModule, MatTooltipModule, RouterLink, MatIconModule, NgFor, FormsModule, ReactiveFormsModule, MatRippleModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, NgClass, MatSelectModule, MatOptionModule, MatDatepickerModule, TextFieldModule, FuseFindByKeyPipe, DatePipe],
 })
@@ -35,6 +36,12 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     @ViewChild('avatarFileInput') private _avatarFileInput: ElementRef;
     @ViewChild('tagsPanel') private _tagsPanel: TemplateRef<any>;
     @ViewChild('tagsPanelOrigin') private _tagsPanelOrigin: ElementRef;
+
+
+    userDataString = localStorage.getItem('userData');
+    userData: UserData = JSON.parse(this.userDataString);
+    UserId = this.userData.data.user.ID || '';
+    CompanyId = this.userData.data.user.workCompanyId || '';
 
     editMode: boolean = false;
     tags: Tag[];
@@ -46,6 +53,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     countries: Country[];
     private _tagsPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    id :  string;
+    user : any;
 
     /**
      * Constructor
@@ -61,6 +70,10 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         private _router: Router,
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
+        private activatedRoute: ActivatedRoute,
+        private userService: UserService,
+
+
     )
     {
     }
@@ -74,153 +87,33 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        // Open the drawer
-        this._contactsListComponent.matDrawer.open();
 
-        // Create the contact form
-        this.contactForm = this._formBuilder.group({
-            id          : [''],
-            avatar      : [null],
-            name        : ['', [Validators.required]],
-            emails      : this._formBuilder.array([]),
-            phoneNumbers: this._formBuilder.array([]),
-            title       : [''],
-            company     : [''],
-            birthday    : [null],
-            address     : [null],
-            notes       : [null],
-            tags        : [[]],
-        });
-
-        // Get the contacts
-        this._contactsService.contacts$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contacts: Contact[]) =>
-            {
-                this.contacts = contacts;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
+            this.activatedRoute.paramMap.subscribe(params => {
+                this.id = params.get('id');
+                this.fetchUser();
             });
 
-        // Get the contact
-        this._contactsService.contact$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contact: Contact) =>
-            {
-                // Open the drawer in case it is closed
-                this._contactsListComponent.matDrawer.open();
-
-                // Get the contact
-                this.contact = contact;
-
-                // Clear the emails and phoneNumbers form arrays
-                (this.contactForm.get('emails') as UntypedFormArray).clear();
-                (this.contactForm.get('phoneNumbers') as UntypedFormArray).clear();
-
-                // Patch values to the form
-                this.contactForm.patchValue(contact);
-
-                // Setup the emails form array
-                const emailFormGroups = [];
-
-                if ( contact.emails.length > 0 )
-                {
-                    // Iterate through them
-                    contact.emails.forEach((email) =>
-                    {
-                        // Create an email form group
-                        emailFormGroups.push(
-                            this._formBuilder.group({
-                                email: [email.email],
-                                label: [email.label],
-                            }),
-                        );
-                    });
-                }
-                else
-                {
-                    // Create an email form group
-                    emailFormGroups.push(
-                        this._formBuilder.group({
-                            email: [''],
-                            label: [''],
-                        }),
-                    );
-                }
-
-                // Add the email form groups to the emails form array
-                emailFormGroups.forEach((emailFormGroup) =>
-                {
-                    (this.contactForm.get('emails') as UntypedFormArray).push(emailFormGroup);
-                });
-
-                // Setup the phone numbers form array
-                const phoneNumbersFormGroups = [];
-
-                if ( contact.phoneNumbers.length > 0 )
-                {
-                    // Iterate through them
-                    contact.phoneNumbers.forEach((phoneNumber) =>
-                    {
-                        // Create an email form group
-                        phoneNumbersFormGroups.push(
-                            this._formBuilder.group({
-                                country    : [phoneNumber.country],
-                                phoneNumber: [phoneNumber.phoneNumber],
-                                label      : [phoneNumber.label],
-                            }),
-                        );
-                    });
-                }
-                else
-                {
-                    // Create a phone number form group
-                    phoneNumbersFormGroups.push(
-                        this._formBuilder.group({
-                            country    : ['us'],
-                            phoneNumber: [''],
-                            label      : [''],
-                        }),
-                    );
-                }
-
-                // Add the phone numbers form groups to the phone numbers form array
-                phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) =>
-                {
-                    (this.contactForm.get('phoneNumbers') as UntypedFormArray).push(phoneNumbersFormGroup);
-                });
-
-                // Toggle the edit mode off
-                this.toggleEditMode(false);
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Get the country telephone codes
-        this._contactsService.countries$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((codes: Country[]) =>
-            {
-                this.countries = codes;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Get the tags
-        this._contactsService.tags$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((tags: Tag[]) =>
-            {
-                this.tags = tags;
-                this.filteredTags = tags;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
     }
+
+    fetchUser(): void {
+        console.log('Fetching user...');
+        this.userService.getUser(this.CompanyId, this.id).subscribe(
+            response => {
+                if (response.data && response.data.email) {
+                    this.user = response.data;
+                    console.log('Data received:', response);
+                    console.log('user email:', this.user.email);
+                } else {
+                    console.error('Invalid response data:', response.data);
+                }
+            },
+            error => {
+                console.error('Error fetching user:', error);
+            }
+        );
+    }
+
+
 
     /**
      * On destroy
@@ -294,62 +187,36 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     /**
      * Delete the contact
      */
-    deleteContact(): void
+    deleteUser(companyID:string, id:string): void
     {
-        // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Delete contact',
-            message: 'Are you sure you want to delete this contact? This action cannot be undone!',
+            title: 'Delete question',
+            message: 'Are you sure you want to remove this user? This action cannot be undone!',
             actions: {
                 confirm: {
+                    show: true,
                     label: 'Delete',
+                    color: 'warn'
                 },
-            },
-        });
-
-        // Subscribe to the confirmation dialog closed action
-        confirmation.afterClosed().subscribe((result) =>
-        {
-            // If the confirm button pressed...
-            if ( result === 'confirmed' )
-            {
-                // Get the current contact's id
-                const id = this.contact.id;
-
-                // Get the next/previous contact's id
-                const currentContactIndex = this.contacts.findIndex(item => item.id === id);
-                const nextContactIndex = currentContactIndex + ((currentContactIndex === (this.contacts.length - 1)) ? -1 : 1);
-                const nextContactId = (this.contacts.length === 1 && this.contacts[0].id === id) ? null : this.contacts[nextContactIndex].id;
-
-                // Delete the contact
-                this._contactsService.deleteContact(id)
-                    .subscribe((isDeleted) =>
-                    {
-                        // Return if the contact wasn't deleted...
-                        if ( !isDeleted )
-                        {
-                            return;
-                        }
-
-                        // Navigate to the next contact if available
-                        if ( nextContactId )
-                        {
-                            this._router.navigate(['../', nextContactId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
-                            this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
-
-                        // Toggle the edit mode off
-                        this.toggleEditMode(false);
-                    });
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
+                cancel: {
+                    show: true,
+                    label: 'Cancel'
+                }
             }
         });
+       confirmation.afterClosed().subscribe(result => {
+            if (result === 'confirmed') {
+                        this.userService.deleteUser(this.CompanyId, this.id).subscribe(
+                          () => {
+                            console.log('Item deleted successfully');
+                          },
+                          error => {
+                            console.error('Error deleting item:', error);
+                          }
+                        );
+                      }
+            }
+        );
 
     }
 

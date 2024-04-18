@@ -26,85 +26,41 @@
     <!-- Main -->
     <div class="flex flex-col flex-auto items-center p-6 sm:p-10">
         <ng-container>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 mt-8 sm:mt-10">
-                <ng-container>
-                    <!-- Test -->
-                    <div class="flex flex-col h-80 shadow rounded-2xl overflow-hidden bg-card bg-white border border-gray-800">
-                        <div class="flex flex-col p-6">
-                            <div class="flex items-center justify-between">
-                                <!-- Course category -->
-                                <ng-container>
-                                    <div
-                                        class="py-0.5 px-10 rounded-full text-sm sm:text-3xl font-semibold text-gray-900">
-                                        Test1
-                                    </div>
-                                </ng-container>
-                                <!-- Completed at least once -->
-                                <div class="flex items-center sm:text-2xl">
-                                    <ng-container>
-                                        <mat-icon
-                                            class="icon-size-5 text-green-600 "
-                                            [svgIcon]="'heroicons_solid:check-badge'"
-                                            [matTooltip]="'Test n 1'"></mat-icon>
-                                    </ng-container>
-                                </div>
-                            </div>
-                            <!-- Course title & description -->
-                            <div class="mt-4 text-lg font-medium text-gray-900">Test title</div>
-                            <div class="w-12 h-1 my-6 border-t-2">
-                            </div>
-
-                            <div class="mt-0.5 line-clamp-2 text-secondary text-gray-900">Technologies : Go / Angular</div>
-
-                            <div class="w-2 h-1 my-1 border-t-1">
-                            </div>
-                            <!-- Course time -->
-                            <div class="flex items-center leading-5 text-md text-secondary">
-                                <mat-icon
-                                    class="icon-size-5 text-hint"
-                                    [svgIcon]="'heroicons_solid:clock'"></mat-icon>
-                                <div class="ml-1.5 text-gray-900">20 minutes</div>
-
-                            </div>
-                            <div class="flex items-center mt-2 leading-5 text-md text-secondary">
-                                <mat-icon
-                                    class="icon-size-5 text-hint"
-                                    [svgIcon]="'heroicons_solid:academic-cap'"></mat-icon>
-                                <ng-container>
-                                    <div class="ml-1.5">Never completed</div>
-                                </ng-container>
-                            </div>
-                            <div class="relative h-0.5">
-
-                                <mat-progress-bar
-                                    [value]="100"></mat-progress-bar>
-                            </div>
-                            <!-- Course launch button -->
-                            <div class="px-6 py-4 text-right bg-gray-50 dark:bg-transparent">
-                                <a
-                                    mat-stroked-button
-                                    [routerLink]="['/qcm']">
-                                    <span class="inline-flex items-center">
-
-                                        <!-- Not started -->
-                                        <ng-container>
-                                            <!-- Never completed -->
-                                            <ng-container>
-                                                <span>Start</span>
-                                            </ng-container>
-                                        </ng-container>
-                                        <mat-icon
-                                            class="ml-1.5 icon-size-5"
-                                            [svgIcon]="'heroicons_solid:arrow-small-right'"></mat-icon>
-                                    </span>
-                                </a>
-                            </div>
-                    </div>
-            </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mt-8 sm:mt-10">
+            <!-- Loop through each test and create a card -->
+            <ng-container *ngFor="let test of tests">
+              <div class="flex flex-col h-full shadow rounded-lg overflow-hidden bg-white border border-gray-200">
+                <div class="flex flex-col p-6">
+                  <!-- Test title -->
+                  <div class="text-xl font-semibold">{{ test.Title }}</div>
+                  <!-- Specialty and Technologies -->
+                  <div class="text-sm text-gray-500">{{ test.Specialty }}</div>
+                  <div class="text-sm text-gray-500">{{ test.Technologies.join(', ') }}</div>
+                  <!-- Progress Bar -->
+                  <div class="mt-4">
+                    <mat-progress-bar [value]="100"></mat-progress-bar>
+                  </div>
+                  <!-- Time and Completion Status -->
+                  <div class="flex items-center mt-4 text-sm text-gray-500">
+                    <mat-icon class="icon-size-5 text-gray-600" [svgIcon]="'heroicons_solid:clock'"></mat-icon>
+                    <div class="ml-1.5">20 minutes</div>
+                  </div>
+                  <div class="flex items-center mt-1 text-sm text-gray-500">
+                    <mat-icon class="icon-size-5 text-gray-600" [svgIcon]="'heroicons_solid:academic-cap'"></mat-icon>
+                    <div class="ml-1.5">Never completed</div>
+                  </div>
+                </div>
+                <!-- Launch Button -->
+                <div class="px-6 py-4 text-right bg-gray-100">
+                    <a mat-stroked-button [routerLink]="['/qcm', test.id]">
+                        <span class="inline-flex items-center">
+                      <span>Start</span>
+                      <mat-icon class="ml-1.5 icon-size-5" [svgIcon]="'heroicons_solid:arrow-small-right'"></mat-icon>
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </ng-container>
+          </div>
         </ng-container>
-</div>
-</ng-container>
-
-
-
-
+      </div>

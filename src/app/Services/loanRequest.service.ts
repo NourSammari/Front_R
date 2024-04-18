@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { LoanRequest } from 'app/Model/loanRequest';
 import { LoanRequestIn } from 'app/Model/loanRequest';
 import { LoanRequestDemande } from 'app/Model/loanRequest';
-import { LoanRequestPagination } from 'app/Model/loanRequest';
 import { LoanRequestCount } from 'app/Model/loanRequest';
 import { UserData } from 'app/Model/session';
 import { ApiResponse } from 'app/Model/apiresponse';

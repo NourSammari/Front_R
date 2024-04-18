@@ -19,6 +19,7 @@ import { UserComponent } from 'app/layout/common/user/user.component';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthSignInComponent } from 'app/modules/auth/sign-in/sign-in.component'
 import { UserData } from 'app/Model/session';
+import { userData } from 'app/Services/UserData.service';
 
 @Component({
     selector     : 'classy-layout',
@@ -33,7 +34,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
     userType: string;
     isScreenSmall: boolean;
     navigation: Navigation;
-    userData: UserData;
+    userDataString : UserData;
 
 
     /**
@@ -45,6 +46,8 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
         private _navigationService: NavigationService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fuseNavigationService: FuseNavigationService,
+        private userData : userData,
+
 
     )
     {
@@ -71,19 +74,9 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        this.userType = localStorage.getItem('userType') || 'candidat'; // Default to 'user' if not found
-        const userDataString = localStorage.getItem('userData');
-        console.log("userDataString:", userDataString); // Log userDataString
-    if (userDataString) {
-        try {
-            this.userData = JSON.parse(userDataString) as UserData;
-            console.log("Parsed userData:", this.userData); // Log parsed userData
-        } catch (error) {
-            console.error('Error parsing userData:', error);
-        }
-    }
-
-
+        this.userType = localStorage.getItem('userType') || 'candidat';
+        this.userDataString =this.userData.getUserData();
+        console.log("userDataString:", this.userDataString);
 
         // Subscribe to navigation data
         this._navigationService.navigation$

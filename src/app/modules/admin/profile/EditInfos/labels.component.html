@@ -1,93 +1,64 @@
-<div class="flex flex-col flex-auto h-120 w-200 min-w-80 p-2 md:p-4 ">
+<div class="flex flex-col flex-auto h-100 w-200 min-w-80 p-2 md:p-4 ">
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div class="text-2xl font-semibold">Update Infos</div>
-        <button
-            matDialogClose
-            mat-icon-button>
+        <button matDialogClose mat-icon-button>
             <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
         </button>
     </div>
 
-    <div class="flex flex-col flex-auto sm:mb-18 w-170 overflow-hidden sm:overflow-y-auto">
-    <form class="mt-8">
+    <form class="mt-8 overflow-y-auto">
+        <!-- Name field -->
+        <mat-form-field class="w-full">
+            <mat-label>First name</mat-label>
+            <input matInput [(ngModel)]="user.firstname" name="firstname">
+        </mat-form-field>
 
-    <!-- Name field -->
-    <mat-form-field class="w-full">
-        <mat-label>First name</mat-label>
-        <input
-            id="name"
-            matInput>
-    </mat-form-field>
+        <!-- Email field -->
+        <mat-form-field class="w-full">
+            <mat-label>Last name</mat-label>
+            <input matInput [(ngModel)]="user.lastname" name="lastname">
+        </mat-form-field>
 
-    <!-- Email field -->
-    <mat-form-field class="w-full">
-        <mat-label>Last name</mat-label>
-        <input
-            id="email"
-            matInput>
-    </mat-form-field>
+        <!-- Email field -->
+        <mat-form-field class="w-full">
+            <mat-label>email</mat-label>
+            <input matInput  [(ngModel)]="user.email" name="email">
+        </mat-form-field>
 
-    <!-- Email field -->
-    <mat-form-field class="w-full">
-        <mat-label>email</mat-label>
-        <input
-            id="password"
-            matInput>
-    </mat-form-field>
+        <!-- Company field -->
+        <mat-form-field class="w-full">
+            <mat-label>Gender</mat-label>
+            <input matInput  [(ngModel)]="user.gender" name="gender">
+        </mat-form-field>
 
-    <!-- Company field -->
-    <mat-form-field class="w-full">
-        <mat-label>Gender</mat-label>
-        <input
-            id="company-confirm"
-            matInput>
-    </mat-form-field>
+        <!-- Company field -->
+        <mat-form-field class="w-full">
+            <mat-label>Address</mat-label>
+            <input matInput  [(ngModel)]="user.adresse" name="adresse">
+        </mat-form-field>
 
-    <!-- Company field -->
-    <mat-form-field class="w-full">
-        <mat-label>Address</mat-label>
-        <input
-            id="company-confirm"
-            matInput>
-    </mat-form-field>
+        <!-- Company field -->
+        <mat-form-field class="w-full">
+            <mat-label>Phone number</mat-label>
+            <input matInput  [(ngModel)]="user.phone_number" name="phone_number">
+        </mat-form-field>
 
-    <!-- Company field -->
-    <mat-form-field class="w-full">
-        <mat-label>Phone number</mat-label>
-        <input
-            id="company-confirm"
-            matInput>
-    </mat-form-field>
+        <!-- Company field -->
+        <mat-form-field class="w-full">
+            <mat-label>Date of birth</mat-label>
+            <input matInput  [(ngModel)]="user.date_of_birth" name="date_of_birth">
+        </mat-form-field>
 
-    <!-- Company field -->
-    <mat-form-field class="w-full">
-        <mat-label>Date of birth</mat-label>
-        <input
-            id="company-confirm"
-            matInput>
-    </mat-form-field>
+        <!-- Company field -->
+        <mat-form-field class="w-full">
+            <mat-label>Departement name</mat-label>
+            <input matInput  [(ngModel)]="user.departement_name" name="departement_name">
+        </mat-form-field>
 
-    <!-- Company field -->
-    <mat-form-field class="w-full">
-        <mat-label>Departement name</mat-label>
-        <input
-            id="company-confirm"
-            matInput>
-    </mat-form-field>
-
-    <!-- Submit button -->
-    <button
-        class="fuse-mat-button w-full mt-1"
-        mat-flat-button
-        [color]="'primary'">
-        <span>
-            Update
-        </span>
-    </button>
-
-</form>
+        <!-- Submit button -->
+        <button class="fuse-mat-button w-full mt-1" mat-flat-button [color]="'primary'" (click)="update(CompanyId, user.id, user )">
+            <span>Update</span>
+        </button>
+    </form>
 </div>
-</div>
-
-

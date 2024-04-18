@@ -5,6 +5,10 @@ import { ContactsService } from 'app/modules/admin/users/contacts.service';
 import { ContactsDetailsComponent } from 'app/modules/admin/users/details/details.component';
 import { ContactsListComponent } from 'app/modules/admin/users/list/list.component';
 import { catchError, throwError } from 'rxjs';
+import { UserService } from 'app/Services/user-service.service';
+import { UserData } from 'app/Model/session';
+import { of } from 'rxjs';
+
 
 /**
  * Contact resolver
@@ -12,29 +16,33 @@ import { catchError, throwError } from 'rxjs';
  * @param route
  * @param state
  */
-const contactResolver = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) =>
-{
-    const contactsService = inject(ContactsService);
+
+const userDataString = localStorage.getItem('userData');
+var userData : UserData;
+userData = JSON.parse(userDataString);
+const CompanyId = userData.data.user.workCompanyId || '';
+const contactResolver = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+    const userService = inject(UserService);
     const router = inject(Router);
 
-    return contactsService.getContactById(route.paramMap.get('id'))
-        .pipe(
-            // Error here means the requested contact is not available
-            catchError((error) =>
-            {
-                // Log the error
+    // Extract the ID from the route parameters
+    const id = route.paramMap.get('id');
+
+    // Check if the ID exists
+    if (id) {
+        // Fetch the user details
+        return userService.getUser(CompanyId, id).pipe(
+            catchError((error) => {
                 console.error(error);
-
-                // Get the parent url
                 const parentUrl = state.url.split('/').slice(0, -1).join('/');
-
-                // Navigate to there
                 router.navigateByUrl(parentUrl);
-
-                // Throw an error
                 return throwError(error);
-            }),
+            })
         );
+    } else {
+        // If no ID is provided, just return an empty observable
+        return of(null);
+    }
 };
 
 /**
@@ -67,7 +75,7 @@ const canDeactivateContactsDetails = (
         return true;
     }
 
-    // If we are navigating to another contact...
+    // If we are navigating to another user...
     if ( nextRoute.paramMap.get('id') )
     {
         // Just navigate
@@ -83,15 +91,14 @@ export default [
         path     : '',
         component: ContactsComponent,
         resolve  : {
-            tags: () => inject(ContactsService).getTags(),
+
         },
         children : [
             {
                 path     : '',
                 component: ContactsListComponent,
                 resolve  : {
-                    contacts : () => inject(ContactsService).getContacts(),
-                    countries: () => inject(ContactsService).getCountries(),
+                    users : () => inject(UserService).getUsers(CompanyId),
                 },
                 children : [
                     {
@@ -99,7 +106,6 @@ export default [
                         component    : ContactsDetailsComponent,
                         resolve      : {
                             contact  : contactResolver,
-                            countries: () => inject(ContactsService).getCountries(),
                         },
                         canDeactivate: [canDeactivateContactsDetails],
                     },

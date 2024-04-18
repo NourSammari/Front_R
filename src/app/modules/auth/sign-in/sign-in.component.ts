@@ -10,14 +10,16 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {  Router, RouterLink , NavigationExtras } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
-import { NavigationMockApi } from 'app/mock-api/common/navigation/api'
-import { Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder} from '@angular/forms';
 import { ActivatedRoute} from '@angular/router';
-import { AuthService } from 'app/core/auth/auth.service';
 import { SignIn } from 'app/Model/signin';
 import { SigninService } from 'app/Services/signinService.service';
+import { Injectable } from '@angular/core';
+import { userData } from 'app/Services/UserData.service';
 
+@Injectable({
+  providedIn: 'root'
+})
 
 @Component({
     selector     : 'auth-sign-in',
@@ -26,11 +28,10 @@ import { SigninService } from 'app/Services/signinService.service';
     animations   : fuseAnimations,
     standalone   : true,
     imports      : [RouterLink, FuseAlertComponent, NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule],
-
 })
 export class AuthSignInComponent implements OnInit {
 
-responseDataArray: any[] = []; // Define an array property to store response data
+responseDataArray: any[] = [];
 sign :SignIn ;
 
     signInForm: FormGroup;
@@ -38,11 +39,10 @@ sign :SignIn ;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
-
         private _formBuilder: FormBuilder,
         private _router: Router,
-        private  SigninService:SigninService
-
+        private SigninService:SigninService,
+        private userData : userData,
     ) {}
 
     ngOnInit(): void {
@@ -52,6 +52,7 @@ sign :SignIn ;
             rememberMe: ['']
         });
     }
+
     signIn(): void {
         console.log('Email field valid:', this.signInForm.get('email').valid);
         console.log('Password field valid:', this.signInForm.get('password').valid);
@@ -61,32 +62,14 @@ sign :SignIn ;
         }
         this.SigninService.SignInUser(this.signInForm.value).subscribe(
             response => {
-                console.log('Sign in successful:', response);
-                // Display user response in VS Code console
-                console.log('User response:', response);
-                
-                // Push response data into the array
-                this.responseDataArray.push(response);
-
-                // Register response data as an array in localStorage
-                localStorage.setItem('userData', JSON.stringify(this.responseDataArray[0]));
-
-                const userType = 'user';
-                //const authenticated = "true";
-                //localStorage.setItem('Auth', authenticated);
-
-                localStorage.setItem('userType', userType);
-
-                const redirectURL = decodeURIComponent(this._activatedRoute.snapshot.queryParamMap.get('redirectURL')) || '/signed-in-redirect-user';
+                this.userData.setUserData(response);
+                const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect-user';
                 this._router.navigateByUrl(redirectURL);
-
             },
             error => {
                 console.error('Error during sign in:', error);
             }
         );
     }
-
-
 }
 

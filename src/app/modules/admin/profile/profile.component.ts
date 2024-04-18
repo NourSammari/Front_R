@@ -14,8 +14,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditInfosComponent } from 'app/modules/admin/profile/EditInfos/labels.component';
 import { EditExperienceComponent } from 'app/modules/admin/profile/EditExperience/labels.component';
 import { UserService } from 'app/Services/user-service.service';
-import { UsersDetails  } from 'app/Model/user';
 import { UserData } from 'app/Model/session';
+import { EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
 
 
 @Component({
@@ -29,7 +34,7 @@ import { UserData } from 'app/Model/session';
 export class ProfileComponent
 {
     user: any;
-
+    methodTriggered: EventEmitter<void> = new EventEmitter<void>();
     userDataString = localStorage.getItem('userData');
     userData: UserData = JSON.parse(this.userDataString);
     UserId = this.userData.data.user.ID || '';
@@ -51,18 +56,18 @@ export class ProfileComponent
     }, 5000);*/
     }
 
-    fetchUser(): void {
+    public fetchUser(): void {
         console.log('Fetching user...');
         this.userService.getUser(this.CompanyId, this.UserId).subscribe(
             response => {
-
-
-                // Ensure that the structure of response.data matches your expectations
                 if (response.data && response.data.email) {
                     this.user = response.data;
+                    console.log('Data After :', this.userData);
+                    const name = response.data.firstname +""+response.data.lastname;
+                    localStorage.setItem('userData.data.user.email', response.data.email);
+                    localStorage.setItem('userData.data.user.name', name);
+                    console.log('Data Before :', this.userData);
                     console.log('Data received:', response);
-                    console.log('user emaillll : ', this.user);
-
                 } else {
                     console.error('Invalid response data:', response.data);
                 }
@@ -71,15 +76,19 @@ export class ProfileComponent
                 console.error('Error fetching user:', error);
             }
         );
+        this.methodTriggered.emit();
     }
 
 
     /**
      * Open the edit labels dialog
      */
-    openEditInfosDialog(): void
+    openEditInfosDialog( user:object , UserId : string, CompanyId : string): void
     {
-        this._matDialog.open(EditInfosComponent, {autoFocus: false});
+        this._matDialog.open(EditInfosComponent,  {
+            data: { user: this.user , UserId: this.UserId , CompanyId: this.CompanyId },
+            autoFocus: false
+          });
     }
 
      /**

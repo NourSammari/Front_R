@@ -65,6 +65,15 @@ export interface User {
     createdAt?: Date;
   }
 
+  export interface UserIn {
+    compnayID?:string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    password?: string;
+    role_name: string;
+  }
+
   export interface AddTrainingUser {
     id: string;
   }

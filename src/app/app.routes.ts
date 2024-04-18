@@ -35,7 +35,7 @@ export const appRoutes: Route[] = [
             {path: 'sign-in', loadChildren: () => import('app/modules/auth/sign-in/sign-in.routes')},
             {path: 'sign-in-C', loadChildren: () => import('app/modules/auth/sign_in_Candidat/sign-in.routes')},
             {path: 'sign-up', loadChildren: () => import('app/modules/auth/sign-up/sign-up.routes')}
-        ]
+        ]//signed-in-redirect-candidate
     },
 
     // Auth routes for authenticated users
@@ -75,7 +75,7 @@ export const appRoutes: Route[] = [
             {path: 'example', loadChildren: () => import('app/modules/admin/example/example.routes')},
             {path: 'projects', loadChildren: () => import('app/modules/admin/projects/projects.routes')},
             {path: 'profile', loadChildren: () => import('app/modules/admin/profile/profile.routes')},
-            {path: 'qcm', loadChildren: () => import('app/modules/admin/qcm/qcm.routes')},
+            {path: 'qcm/:id', loadChildren: () => import('app/modules/admin/qcm/qcm.routes')},
 
 
             {path: 'advance', loadChildren: () => import('app/modules/admin/advance/advanceSalary/advanceSalary.routes')},

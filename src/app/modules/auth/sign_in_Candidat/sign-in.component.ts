@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {  Router, RouterLink } from '@angular/router';
+import {  Router, RouterLink , NavigationExtras } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { NavigationMockApi } from 'app/mock-api/common/navigation/api'
@@ -15,6 +15,9 @@ import { Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder} from '@angular/forms';
 import { ActivatedRoute} from '@angular/router';
 import { AuthService } from 'app/core/auth/auth.service';
+import { SignIn } from 'app/Model/signin';
+import { SigninService } from 'app/Services/signinService.service';
+
 
 @Component({
     selector     : 'auth-sign-in',
@@ -23,51 +26,53 @@ import { AuthService } from 'app/core/auth/auth.service';
     animations   : fuseAnimations,
     standalone   : true,
     imports      : [RouterLink, FuseAlertComponent, NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule],
-
 })
 export class AuthSignInComponent implements OnInit {
+
+responseDataArray: any[] = []; // Define an array property to store response data
+sign :SignIn ;
+
     signInForm: FormGroup;
     showAlert: boolean = false;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
-        private _authService: AuthService,
+
         private _formBuilder: FormBuilder,
-        private _router: Router
+        private _router: Router,
+        private  SigninService:SigninService
+
     ) {}
 
     ngOnInit(): void {
         this.signInForm = this._formBuilder.group({
-            email     : ['hughes.brian@company.com', [Validators.required, Validators.email]],
-            password  : ['admin', Validators.required],
+            email     : ['', [Validators.required, Validators.email]],
+            password  : ['', Validators.required],
             rememberMe: ['']
         });
     }
-
     signIn(): void {
+        console.log('Email field valid:', this.signInForm.get('email').valid);
+        console.log('Password field valid:', this.signInForm.get('password').valid);
         if (this.signInForm.invalid) {
+            console.error('Invalid form');
             return;
         }
+        this.SigninService.SignInUser(this.signInForm.value).subscribe(
+            response => {
+                this.responseDataArray.push(response);
+                localStorage.setItem('userData', JSON.stringify(this.responseDataArray[0]));
+                const userType = 'candidat'; 
+                localStorage.setItem('userType', userType);
 
-        this.signInForm.disable();
-        this.showAlert = false;
-
-        this._authService.signIn(this.signInForm.value)
-            .subscribe(
-                () => {
-                    // Handle layout change in the ClassyLayoutComponent
-                    // based on the user type (e.g., 'user' or 'candidate')
-                    const userType = 'candidat'; // or 'candidate'
-                    localStorage.setItem('userType', userType);
-
-                    const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect-candidate';
-                    this._router.navigateByUrl(redirectURL);
-                },
-                (response) => {
-                    this.signInForm.enable();
-                    this.signInForm.reset();
-                    this.showAlert = true;
-                }
-            );
+                const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect-candidate';
+                this._router.navigateByUrl(redirectURL);
+            },
+            error => {
+                console.error('Error during sign in:', error);
+            }
+        );
     }
+
 }
+
