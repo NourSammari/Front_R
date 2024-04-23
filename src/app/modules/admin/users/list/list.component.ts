@@ -17,6 +17,8 @@ import { AddComponent } from '../add/labels.component';
 import { MatDialog } from '@angular/material/dialog';
 
 
+
+
 @Component({
     selector       : 'contacts-list',
     templateUrl    : './list.component.html',
@@ -27,6 +29,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class ContactsListComponent implements OnInit, OnDestroy
 {
     @ViewChild('matDrawer', {static: true}) matDrawer: MatDrawer;
+
 
     contacts$: Observable<Contact[]>;
 
@@ -93,7 +96,7 @@ export class ContactsListComponent implements OnInit, OnDestroy
         {
             if ( !opened )
             {
-                console.log('clickedddddd');
+                console.log('clicked');
                 // Remove the selected contact when drawer closed
                 this.selectedContact = null;
 
@@ -155,6 +158,13 @@ export class ContactsListComponent implements OnInit, OnDestroy
             }
         );
     }
+    closeDrawer() {
+        if (this.matDrawer) {
+
+          this.matDrawer.close();
+          this._changeDetectorRef.markForCheck();
+        }
+      }
 
     /**
      * On backdrop clicked
@@ -186,4 +196,20 @@ export class ContactsListComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
+
+    closeDrawerBeforeNavigation(event: Event, userId: string): void {
+        // Prevent the default behavior of the link (i.e., navigating immediately)
+        event.preventDefault();
+
+        // Close the drawer
+        this.closeDrawer();
+
+        // Navigate to the new route after a short delay (adjust the delay as needed)
+        setTimeout(() => {
+            // Navigate to the new route
+            this.router.navigate(['users/', userId]);
+        }, 100);
+    }
+
+
 }

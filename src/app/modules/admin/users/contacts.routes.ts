@@ -82,8 +82,7 @@ const canDeactivateContactsDetails = (
         return true;
     }
 
-    // Otherwise, close the drawer first, and then navigate
-    return component.closeDrawer().then(() => true);
+
 };
 
 export default [
@@ -104,13 +103,12 @@ export default [
                     {
                         path         : ':id',
                         component    : ContactsDetailsComponent,
-                        resolve      : {
-                            contact  : contactResolver,
-                        },
-                        canDeactivate: [canDeactivateContactsDetails],
+
                     },
                 ],
             },
         ],
+
     },
+
 ] as Routes;

@@ -34,21 +34,21 @@
     <!-- Main -->
     <div class="flex flex-auto overflow-hidden">
 
-        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden">
-            <div class="grid overflow-y-auto">
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden ">
+            <div class="grid sm:overflow-y-auto">
                 <!-- Header -->
-                <div class="inventory-grid z-10 sticky top-0 grid gap-30 py-4 h-10 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                <div class="inventory-grid z-10 sticky top-0 grid gap-30 py-4 h-10 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5 "
                     matSort matSortDisableClear>
 
                     <div [mat-sort-header]="'questions'">Question</div>
-                    <div class="hidden sm:block" [mat-sort-header]="'correctAnswer'">Correct answer</div>
+                    <div class="hidden sm:block w-200" [mat-sort-header]="'correctAnswer'">Correct answer</div>
                     <div class="hidden lg:block" [mat-sort-header]="'options'">Options</div>
                     <div class="hidden lg:block" [mat-sort-header]="'technology'">Technology</div>
                     <div class="hidden sm:block">Actions</div>
                 </div>
                 <!-- Rows -->
                 <ng-container *ngFor="let question of questions">
-                    <div class="inventory-grid grid items-center h-12 gap-30 py-3 px-6 md:px-8 border-b">
+                    <div class="inventory-grid grid items-center h-full gap-30 py-3 px-6 md:px-8 border-b">
                         <!-- Name -->
                         <div class="flex question-cell" title="{{ question.Question }}"
                             [style.max-width.px]="300"
@@ -90,6 +90,7 @@
                     </div>
                 </ng-container>
             </div>
+            <footer class="sm:absolute sm:inset-x-1 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent">
                 <!-- Pagination -->
                 <mat-paginator [pageIndex]="pageIndex"
                [pageSize]="pageSize"
@@ -97,7 +98,7 @@
                [length]="totalQuestions"
                (page)="onPageChange($event)">
                 </mat-paginator>
-
+            </footer>
         </div>
 
 

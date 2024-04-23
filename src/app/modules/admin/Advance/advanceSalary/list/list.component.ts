@@ -232,6 +232,8 @@ fetchUser(userId:string): void {
             response => {
                 console.log('Loan request updated successfully:', response);
                 this.fetchRequests();
+
+
             },
             error => {
                 console.error('Error updating loan request:', error);
@@ -239,7 +241,7 @@ fetchUser(userId:string): void {
         );
     }
 
-    refuseRequest(userId: string, RequestId: string): void {
+    refuseRequest(userId: string, RequestId: string, selectedRequest : any): void {
         const status = {
             status: 'refused'
         };
@@ -247,12 +249,19 @@ fetchUser(userId:string): void {
             response => {
                 console.log('Loan request updated successfully:', response);
                 this.fetchRequests();
+                this.viewDetails(selectedRequest);
             },
             error => {
                 console.error('Error updating loan request:', error);
             }
         );
     }
+
+    approveAndShowDetails(userId: string, RequestId: string,selectedRequest: any): void {
+        this.approveRequest(userId,  RequestId);
+        this.viewDetails(selectedRequest);
+    }
+
 
 
     /**

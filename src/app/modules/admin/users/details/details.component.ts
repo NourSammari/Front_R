@@ -23,6 +23,11 @@ import { ContactsListComponent } from 'app/modules/admin/users/list/list.compone
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { UserService } from 'app/Services/user-service.service';
 import { UserData } from 'app/Model/session';
+import { DOCUMENT } from '@angular/common';
+import { Inject } from '@angular/core';
+import { MatDrawer } from '@angular/material/sidenav';
+
+
 
 @Component({
     selector       : 'contacts-details',
@@ -36,6 +41,10 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     @ViewChild('avatarFileInput') private _avatarFileInput: ElementRef;
     @ViewChild('tagsPanel') private _tagsPanel: TemplateRef<any>;
     @ViewChild('tagsPanelOrigin') private _tagsPanelOrigin: ElementRef;
+    @ViewChild('matDrawer') matDrawer: MatDrawer;
+
+    @Inject(DOCUMENT) private document: Document;
+    private _elementRef: ElementRef;
 
 
     userDataString = localStorage.getItem('userData');
@@ -67,16 +76,45 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         private _formBuilder: UntypedFormBuilder,
         private _fuseConfirmationService: FuseConfirmationService,
         private _renderer2: Renderer2,
-        private _router: Router,
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
         private activatedRoute: ActivatedRoute,
         private userService: UserService,
+        private route: ActivatedRoute,
 
 
     )
     {
     }
+
+    onUserItemClick(user: any) {
+        console.log('User clicked:', user);
+        // Optionally, add navigation logic here as well
+    }
+
+
+    closeDrawer() {
+        if (this.matDrawer) {
+          this.matDrawer.close();
+        }
+      }
+
+    ngOnDestroy(): void {
+       // Unsubscribe from all subscriptions
+       this._unsubscribeAll.next(null);
+       this._unsubscribeAll.complete();
+
+       // Dispose the overlays if they are still on the DOM
+       if (this._tagsPanelOverlayRef) {
+           this._tagsPanelOverlayRef.dispose();
+       }
+
+       // Check if _elementRef is defined before accessing it
+       if (this._elementRef) {
+           this.document.removeEventListener('click', this.onDocumentClick.bind(this));
+       }
+    }
+
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -85,63 +123,54 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
+        this._contactsListComponent.matDrawer.open();
 
-            this.activatedRoute.paramMap.subscribe(params => {
-                this.id = params.get('id');
-                this.fetchUser();
-            });
+        // Subscribe to route parameter changes
+        this.route.paramMap.subscribe(params => {
+            // Get the user ID from the route parameters
+            const userId = params.get('id');
+            console.log("User Id : ", userId); // Log the userId obtained from the route
 
-    }
-
-    fetchUser(): void {
-        console.log('Fetching user...');
-        this.userService.getUser(this.CompanyId, this.id).subscribe(
-            response => {
-                if (response.data && response.data.email) {
-                    this.user = response.data;
-                    console.log('Data received:', response);
-                    console.log('user email:', this.user.email);
-                } else {
-                    console.error('Invalid response data:', response.data);
-                }
-            },
-            error => {
-                console.error('Error fetching user:', error);
+            // Fetch user data using the obtained userId
+            if (userId) {
+                this.fetchUser(userId);
             }
-        );
+        });
+
+        this.document.addEventListener('click', this.onDocumentClick.bind(this));
     }
 
 
-
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
-
-        // Dispose the overlays if they are still on the DOM
-        if ( this._tagsPanelOverlayRef )
-        {
-            this._tagsPanelOverlayRef.dispose();
+fetchUser(userId: string): void {
+    console.log('Fetching user...');
+    this.userService.getUser(this.CompanyId, userId).subscribe(
+        response => {
+            if (response.data && response.data.email) {
+                this.user = response.data;
+                console.log('Data received:', response);
+                console.log('User email:', this.user.email);
+            } else {
+                console.error('Invalid response data:', response.data);
+            }
+        },
+        error => {
+            console.error('Error fetching user:', error);
         }
+    );
+}
+
+    onDocumentClick(event: MouseEvent): void {
+    // Check if the click target is outside the drawer
+    if (!this._elementRef.nativeElement.contains(event.target)) {
+        // Close the drawer
+        this.closeDrawer();
+    }
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Close the drawer
-     */
-    closeDrawer(): Promise<MatDrawerToggleResult>
-    {
-        return this._contactsListComponent.matDrawer.close();
-    }
 
     /**
      * Toggle edit mode

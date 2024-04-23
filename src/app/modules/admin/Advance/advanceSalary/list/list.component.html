@@ -14,8 +14,6 @@
             </mat-paginator>
         </div>
 
-
-
         <!-- List of items -->
         <div class="overflow-y-auto">
             <!-- Item loop -->
@@ -104,12 +102,12 @@
                 <ng-container *ngIf="selectedRequest && selectedRequest.status === 'pending'">
                     <div class="flex flex-wrap">
                         <!-- Approve -->
-                        <button class="m-2" mat-stroked-button [color]="'primary'" (click)="approveRequest(selectedRequest.UserID, selectedRequest.id)">
+                        <button class="m-2" mat-stroked-button [color]="'primary'" (click)="approveAndShowDetails(selectedRequest.UserID, selectedRequest.id,selectedRequest)">
                             <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:arrow-uturn-left'"></mat-icon>
                             <span class="ml-2">Approve</span>
                         </button>
                         <!-- Refuse -->
-                        <button class="m-2" mat-stroked-button [color]="'primary'" (click)="refuseRequest(selectedRequest.UserID, selectedRequest.id)">
+                        <button class="m-2" mat-stroked-button [color]="'primary'" (click)="refuseRequest(selectedRequest.UserID, selectedRequest.id,selectedRequest)">
                             <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:arrow-uturn-left'"></mat-icon>
                             <span class="ml-2">Refuse</span>
                         </button>

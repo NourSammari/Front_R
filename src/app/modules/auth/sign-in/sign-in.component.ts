@@ -15,7 +15,6 @@ import { ActivatedRoute} from '@angular/router';
 import { SignIn } from 'app/Model/signin';
 import { SigninService } from 'app/Services/signinService.service';
 import { Injectable } from '@angular/core';
-import { userData } from 'app/Services/UserData.service';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +41,6 @@ sign :SignIn ;
         private _formBuilder: FormBuilder,
         private _router: Router,
         private SigninService:SigninService,
-        private userData : userData,
     ) {}
 
     ngOnInit(): void {
@@ -62,7 +60,10 @@ sign :SignIn ;
         }
         this.SigninService.SignInUser(this.signInForm.value).subscribe(
             response => {
-                this.userData.setUserData(response);
+                this.responseDataArray.push(response);
+                localStorage.setItem('userData', JSON.stringify(this.responseDataArray[0]));
+                const userType = 'user';
+                localStorage.setItem('userType', userType);
                 const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect-user';
                 this._router.navigateByUrl(redirectURL);
             },
