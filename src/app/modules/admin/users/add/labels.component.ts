@@ -1,6 +1,6 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -62,13 +62,18 @@ export class AddComponent implements OnInit
         console.log('CompanyId:', this.CompanyId);
 
         this.composeForm = this.formBuilder.group({
-            firstname: [''],
-            lastname: [''],
-            email: [''],
-            rolename: [''],
-            password: [''],
-          });
+            firstname: ['', Validators.required],
+            lastname: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            rolename: ['', Validators.required],
+            password: ['', Validators.required],
+            confirmPassword: ['', Validators.required]
+          }, { validator: this.passwordMatchValidator });
     }
+
+    passwordMatchValidator(g: FormGroup) {
+        return g.get('password').value === g.get('confirmPassword').value ? null : { mismatch: true };
+      }
 
 
     add(): void {
@@ -112,14 +117,6 @@ export class AddComponent implements OnInit
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Add label
-     *
-     * @param title
-     */
-    addLabel(title: string): void
-    {
-    }
 
     /**
      * Track by function for ngFor loops

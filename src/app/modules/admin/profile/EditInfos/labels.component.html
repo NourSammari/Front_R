@@ -26,11 +26,21 @@
             <input matInput  [(ngModel)]="user.email" name="email">
         </mat-form-field>
 
-        <!-- Company field -->
-        <mat-form-field class="w-full">
-            <mat-label>Gender</mat-label>
-            <input matInput  [(ngModel)]="user.gender" name="gender">
-        </mat-form-field>
+
+        <div class="sm:col-span-1 flex items-center justify-end">
+            <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                <mat-label>Gender</mat-label>
+                <input matInput [(ngModel)]="user.gender" name="gender" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let option of genderOptions" [value]="option">
+                        {{ option }}
+                    </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="genderControl.hasError('required')">Gender is required</mat-error>
+            </mat-form-field>
+        </div>
+
+
 
         <!-- Company field -->
         <mat-form-field class="w-full">
@@ -47,7 +57,9 @@
         <!-- Company field -->
         <mat-form-field class="w-full">
             <mat-label>Date of birth</mat-label>
-            <input matInput  [(ngModel)]="user.date_of_birth" name="date_of_birth">
+            <input matInput  [(ngModel)]="user.date_of_birth" [matDatepicker]="date_of_birth" name="date_of_birth">
+            <mat-datepicker-toggle matSuffix [for]="date_of_birth"></mat-datepicker-toggle>
+            <mat-datepicker #date_of_birth ></mat-datepicker>
         </mat-form-field>
 
         <!-- Company field -->

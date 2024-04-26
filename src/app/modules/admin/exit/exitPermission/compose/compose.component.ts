@@ -1,9 +1,8 @@
-import { NgIf } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { QuillEditorComponent } from 'ngx-quill';
-import { AdvanceSalaryRequestService } from 'app/Services/advanceSalary.service';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -11,6 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ExitPermissionService } from 'app/Services/exitPermission.service';
 import { UserData } from 'app/Model/session';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 
 
 @Component({
@@ -18,7 +19,10 @@ import { UserData } from 'app/Model/session';
     templateUrl: './compose.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone   : true,
-    imports      : [MatButtonModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgIf, QuillEditorComponent],
+    imports      : [MatNativeDateModule,MatDatepickerModule,MatButtonModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgIf, QuillEditorComponent],
+    providers: [
+        DatePipe
+      ],
 })
 export class MailboxComposeComponent implements OnInit {
     userDataString = localStorage.getItem('userData');
@@ -38,7 +42,7 @@ export class MailboxComposeComponent implements OnInit {
         public matDialogRef: MatDialogRef<MailboxComposeComponent>,
         private formBuilder: FormBuilder,
         private exitPermissionService: ExitPermissionService,
-
+        private datePipe: DatePipe,
     ) {}
 
     ngOnInit(): void {
@@ -59,15 +63,17 @@ export class MailboxComposeComponent implements OnInit {
     }
 
     discard(): void {
-        // Implement discard functionality if needed
     }
 
     saveAsDraft(): void {
-        // Implement save as draft functionality if needed
     }
 
     send(): void {
         if (this.composeForm.valid) {
+            this.composeForm.value.start_time = this.datePipe.transform(this.composeForm.value.start_time, 'yyyy-MM-dd');
+            this.composeForm.value.return_time = this.datePipe.transform(this.composeForm.value.return_time, 'yyyy-MM-dd');
+            console.log("start time : ",this.composeForm.value.start_time);
+            console.log("return time : ",this.composeForm.value.return_time);
             const request = {
                 reason: this.composeForm.value.reason,
                 start_date: this.composeForm.value.start_time,

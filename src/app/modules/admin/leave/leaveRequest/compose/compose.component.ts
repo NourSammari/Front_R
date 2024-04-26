@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { QuillEditorComponent } from 'ngx-quill';
 import { LeaveRequestService } from 'app/Services/leaveRequest.service';
 import { UserData } from 'app/Model/session';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule} from '@angular/material/core';
 
 
 @Component({
@@ -16,7 +18,10 @@ import { UserData } from 'app/Model/session';
     templateUrl  : './compose.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone   : true,
-    imports      : [MatButtonModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgIf, QuillEditorComponent],
+    imports      : [ MatNativeDateModule,MatDatepickerModule,MatButtonModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgIf, QuillEditorComponent],
+    providers: [
+        DatePipe
+      ],
 })
 export class MailboxComposeComponent implements OnInit
 {
@@ -39,6 +44,8 @@ export class MailboxComposeComponent implements OnInit
         public matDialogRef: MatDialogRef<MailboxComposeComponent>,
         private _formBuilder: UntypedFormBuilder,
         private leaveRequestService: LeaveRequestService,
+        private datePipe: DatePipe,
+
 
     )
     {
@@ -53,8 +60,6 @@ export class MailboxComposeComponent implements OnInit
      */
     ngOnInit(): void
     {
-
-
      {
             this.composeForm = this._formBuilder.group({
             start_date: ['', Validators.required],
@@ -99,18 +104,14 @@ export class MailboxComposeComponent implements OnInit
 
     send(): void {
         if (this.composeForm.valid) {
-
-            if (this.composeForm.valid) {
+                this.composeForm.value.start_date = this.datePipe.transform(this.composeForm.value.start_date, 'yyyy-MM-dd');
+                this.composeForm.value.end_date = this.datePipe.transform(this.composeForm.value.end_date, 'yyyy-MM-dd');
                 const request = {
                     start_date: this.composeForm.value.start_date,
                     end_date: this.composeForm.value.end_date,
                     leave_type: this.composeForm.value.type,
                     reason: this.composeForm.value.reason
                 };
-            const Amount: number = parseFloat(this.composeForm.value.amount);
-
-            
-
                 this.leaveRequestService.createLeaveRequest(this.CompanyId, request).subscribe(
                     response => {
                         // Handle success response
@@ -126,5 +127,5 @@ export class MailboxComposeComponent implements OnInit
                 console.error('LoanAmount is not a valid number');
             }
         }
-    }
+    
 }

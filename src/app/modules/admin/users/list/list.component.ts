@@ -1,5 +1,5 @@
 import { AsyncPipe, DOCUMENT, I18nPluralPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -79,12 +79,12 @@ export class ContactsListComponent implements OnInit, OnDestroy
         }, 5000);
 
 
+
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeAll),
                 switchMap(query =>
-
                     // Search
                     this._contactsService.searchContacts(query),
                 ),
@@ -104,7 +104,6 @@ export class ContactsListComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             }
         });
-
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -196,20 +195,5 @@ export class ContactsListComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
-
-    closeDrawerBeforeNavigation(event: Event, userId: string): void {
-        // Prevent the default behavior of the link (i.e., navigating immediately)
-        event.preventDefault();
-
-        // Close the drawer
-        this.closeDrawer();
-
-        // Navigate to the new route after a short delay (adjust the delay as needed)
-        setTimeout(() => {
-            // Navigate to the new route
-            this.router.navigate(['users/', userId]);
-        }, 100);
-    }
-
 
 }

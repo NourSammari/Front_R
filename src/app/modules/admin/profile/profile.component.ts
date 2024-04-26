@@ -1,5 +1,5 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { NgClass } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -18,6 +18,7 @@ import { UserData } from 'app/Model/session';
 import { EventEmitter } from '@angular/core';
 import { Injectable } from '@angular/core';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -27,75 +28,64 @@ import { Injectable } from '@angular/core';
     selector       : 'profile',
     templateUrl    : './profile.component.html',
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone     : true,
     imports        : [RouterLink, FuseCardComponent, MatIconModule, MatButtonModule, MatMenuModule, MatFormFieldModule, MatInputModule, TextFieldModule, MatDividerModule, MatTooltipModule, NgClass],
+    providers: [
+        DatePipe
+      ],
 })
-export class ProfileComponent
-{
+export class ProfileComponent{
     user: any;
     methodTriggered: EventEmitter<void> = new EventEmitter<void>();
     userDataString = localStorage.getItem('userData');
     userData: UserData = JSON.parse(this.userDataString);
     UserId = this.userData.data.user.ID || '';
     CompanyId = this.userData.data.user.workCompanyId || '';
-    /**
-     * Constructor
-     */
-    constructor(private _matDialog: MatDialog,
-        private userService: UserService,
-        )
-    {
-    }
+
+    constructor(
+      private _matDialog: MatDialog,
+      private userService: UserService,
+      private datePipe: DatePipe
+    ) {}
 
     ngOnInit(): void {
+      this.fetchUser();
+    }
 
-        this.fetchUser();
-        /*setInterval(() => {
-        this.fetchUser();
-    }, 5000);*/
+    formattedDateOfBirth(): string {
+      return this.datePipe.transform(this.user.date_of_birth, 'yyyy-MM-dd') || '';
+    }
+
+    formattedDateOfHire(): string {
+      return this.datePipe.transform(this.user.date_of_hire, 'yyyy-MM-dd') || '';
     }
 
     public fetchUser(): void {
-        console.log('Fetching user...');
-        this.userService.getUser(this.CompanyId, this.UserId).subscribe(
-            response => {
-                if (response.data && response.data.email) {
-                    this.user = response.data;
-                    console.log('Data After :', this.userData);
-                    const name = response.data.firstname +""+response.data.lastname;
-                    localStorage.setItem('userData.data.user.email', response.data.email);
-                    localStorage.setItem('userData.data.user.name', name);
-                    console.log('Data Before :', this.userData);
-                    console.log('Data received:', response);
-                } else {
-                    console.error('Invalid response data:', response.data);
-                }
-            },
-            error => {
-                console.error('Error fetching user:', error);
-            }
-        );
-        this.methodTriggered.emit();
+      console.log('Fetching user...');
+      this.userService.getUser(this.CompanyId, this.UserId).subscribe(
+        response => {
+          if (response.data && response.data.email) {
+            this.user = response.data;
+            console.log('Data received:', response);
+          } else {
+            console.error('Invalid response data:', response.data);
+          }
+        },
+        error => {
+          console.error('Error fetching user:', error);
+        }
+      );
+      this.methodTriggered.emit();
     }
 
-
-    /**
-     * Open the edit labels dialog
-     */
-    openEditInfosDialog( user:object , UserId : string, CompanyId : string): void
-    {
-        this._matDialog.open(EditInfosComponent,  {
-            data: { user: this.user , UserId: this.UserId , CompanyId: this.CompanyId },
-            autoFocus: false
-          });
+    openEditInfosDialog(user: object, UserId: string, CompanyId: string): void {
+      this._matDialog.open(EditInfosComponent, {
+        data: { user: this.user, UserId: this.UserId, CompanyId: this.CompanyId },
+        autoFocus: false
+      });
     }
 
-     /**
-     * Open the edit labels dialog
-     */
-     openEditExperienceDialog(): void
-     {
-         this._matDialog.open(EditExperienceComponent, {autoFocus: false});
-     }
-}
+    openEditExperienceDialog(): void {
+      this._matDialog.open(EditExperienceComponent, { autoFocus: false });
+    }
+  }

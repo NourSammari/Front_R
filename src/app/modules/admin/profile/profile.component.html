@@ -80,7 +80,8 @@
                         <mat-icon
                             class="icon-size-5 mr-3"
                             [svgIcon]="'heroicons_solid:cake'"></mat-icon>
-                        <span class="leading-none">{{user.date_of_birth}}</span>
+                        <span class="leading-none">{{formattedDateOfBirth()}}
+                        </span>
                     </div>
 
                     <div class="flex items-center mt-4">
@@ -99,7 +100,7 @@
                         <mat-icon
                             class="icon-size-5 mr-3"
                             svgIcon="heroicons_outline:shield-check"></mat-icon>
-                        <span class="leading-none">Hired on {{user.date_of_hire}}</span>
+                        <span class="leading-none">Hired on {{formattedDateOfHire()}}</span>
                     </div>
                 </div>
                 <a   (click)="openEditInfosDialog(user,user.Id,CompanyId)"

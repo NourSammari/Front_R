@@ -14,7 +14,7 @@
                 <a
                     mat-icon-button
                     [matTooltip]="'Close'"
-                    (click)="closeDrawer()">
+                    (click)="navigateToUsers()">
                     <mat-icon
                         class="text-white"
                         [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
@@ -165,7 +165,7 @@
                             mat-button
                             [color]="'warn'"
                             [matTooltip]="'Delete'"
-                            (click)="deleteUser()">
+                            (click)="deleteUser(user.id)">
                             Delete
                         </button>
                         <!-- Cancel -->
@@ -180,14 +180,11 @@
                         <button
                             class="ml-2"
                             mat-flat-button
-                            [color]="'primary'"
-                            [disabled]="contactForm.invalid"
                             [matTooltip]="'Save'"
                             (click)="updateContact()">
                             Save
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>

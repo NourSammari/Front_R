@@ -18,18 +18,18 @@
         class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto"
         [formGroup]="composeForm">
 
-        <mat-form-field>
+        <mat-form-field class="w-full">
             <mat-label>Start time</mat-label>
-            <input
-                matInput
-                [formControlName]="'start_time'">
+            <input matInput  [matDatepicker]="start_time" [formControlName]="'start_time'">
+            <mat-datepicker-toggle matSuffix [for]="start_time"></mat-datepicker-toggle>
+            <mat-datepicker #start_time ></mat-datepicker>
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="w-full">
             <mat-label>Return time</mat-label>
-            <input
-                matInput
-                [formControlName]="'return_time'">
+            <input matInput  [matDatepicker]="return_time" [formControlName]="'return_time'">
+            <mat-datepicker-toggle matSuffix [for]="return_time"></mat-datepicker-toggle>
+            <mat-datepicker #return_time ></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>

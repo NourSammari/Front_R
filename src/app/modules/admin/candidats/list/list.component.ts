@@ -44,6 +44,7 @@ export class ContactsListComponent implements OnInit, OnDestroy
         @Inject(DOCUMENT) private _document: any,
         private _router: Router,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
+
     )
     {
     }
